@@ -251,3 +251,90 @@ A: 都可以。但放在body中更好，【更符合 html 文本的读取顺序�
 一、 描述需要的变量，要在代码中记录哪些东西
 二、 描述程序的逻辑，要创建这个游戏必须如实地实现哪些代码
 
+### 布尔运算符
+布尔表达式有两种布尔运算符：
+- 比较运算符
+  - < 、>、==、===、<=、>=、!=
+
+- 逻辑运算符  
+  将两个布尔表达式合而为一，得到一个布尔结果。
+  - || ： or : 至少有一个表达式为 true
+  - && : and : 仅当两个表达式都为 true时，结果才为 true
+  - ! : not : 当仅表达式为 false 时，结果才为 
+  - 可编组：用括号
+  ```js
+   in stock == true && (on sale == true || price < 60)
+  ```
+
+  ### 游戏代码
+  ```js
+var location1 = 3;
+var location2 = 4;
+var location3 = 5;
+var guess;   // 用户输入的字符串
+var hits = 0;
+var guesses = 0;  // 用户输入的次数
+var isSunk = false;
+
+while (isSunk == false) {
+	guess = prompt("Ready, aim, fire! (enter a number from 0-6):"); // 将用户的输入赋给变量 guess
+	if (guess < 0 || guess > 6) {
+		alert("Please enter a valid cell number!");
+	} else {
+		guesses = guesses + 1;
+		if (guess == location1 || guess == location2 || guess == location3) {
+			alert("HIT!");
+			hits = hits + 1;
+			if (hits == 3) {
+				isSunk = true;   // 变量值被改变
+				alert("You sank my battleship!");
+			}
+		} else {
+			alert("MISS");
+		}
+	}
+}
+var stats = "You took " + guesses + " guesses to sink the battleship, " +
+            "which means your shooting accuracy was " + (3/guesses);
+alert(stats);
+```
+
+【Q: 为什么是先显示游戏并结束后，才显示 在script 上方的 h1 " play battleship " ？】
+
+### 质量保证
+质量保证（quality assurance,QA）是指对软件进行测试以找出其中的缺陷。包括不符合预期的情况或可改进的地方。
+按使用步骤进行。 比如游戏。    
+#### 改进举例：
+```js
+if (inStock == true) {
+  if (onSale == true) {
+    alert("buy buy buy!");
+  }
+}
+```
+用 and 运算符可改进为
+```js
+if (inStock == true && onSale == true) {
+  alert("buy buy buy !");
+}
+```
+可组合
+```js
+if (   in stock == true && (on sale == true || price < 60)) {
+  alert("buy buy buy!");
+}
+```
+### 简化条件:布尔变量  
+```js
+if (inStock == true) {
+  ...
+}
+```
+inStock是布尔变量,本身的值就是 true 或 false。
+简化为
+```js
+if (inStock) {   // true 或 false。
+  ...
+}
+```
+两种 都可以，第二种更简洁。
