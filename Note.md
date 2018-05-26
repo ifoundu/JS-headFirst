@@ -107,7 +107,7 @@ while (scoops > 0) {
 var scoops = 5;
 while (scoops > 0) {
   document.write("Another scoops!<br>");
-  scoops = scoops -1;
+  scoops = scoops -1;                     // Q:似乎都要搭配自增？
 }
 document.write("Life without ice cream isn't the same");
 ```
@@ -320,7 +320,7 @@ if (inStock == true && onSale == true) {
 ```
 可组合
 ```js
-if (   in stock == true && (on sale == true || price < 60)) {
+if (in stock == true && (on sale == true || price < 60)) {
   alert("buy buy buy!");
 }
 ```
@@ -382,6 +382,7 @@ var location3 = location2 + 1;
 - 犯错的可能性也就越大  
 解决办法：
 - 提取重复代码，提高重用(reuse)效率
+【函数思维：将重复的代码交给函数】
 ## 函数
 JS 函数让你能够给一系列代码指定名称，以便需要时反复使用它们。
 ```js
@@ -456,3 +457,169 @@ saveMyProfile(student, year, 381/100, status == "newuser");
 #### 形参与实参
 形参只需要定义一次，但函数会被多次调用，而且每次的实参可能不同。
 
+### JS 按值传递实参
+这意味着传递的是实参的副本。    
+
+按值传递（pass-by-value)，这意味着每个实参的值复制给形参。  
+【这是什么逻辑？因为实参的值不变吗?还真是这样。】 
+
+Whatever happens to a parameter in the function,stays in the function.  
+Whatever happens in Vegas styas in Vegas.
+
+例外：对象。  
+
+### 错误调用函数
+- 实参不够，相应实参值为 undefined
+- 实参太多，自动被忽略。（后面才介绍如何确定实参是否太多）
+
+### 函数还可返回值
+- 与函数通信：向函数传递实参
+- 函数与你通信：return 语句
+```js
+function bake(degree) {
+  var message;
+
+  if (degrees > 500) {
+    message = "I'm not a nuclear reactor!";
+  } else if (degrees < 100) {
+    message = "I'm not a regregerator!";
+  } else {
+    message = "That's a very confortable temperature for me."
+    setMode("bake");
+    setTemp(degree);
+  }
+  return message; // 将message作为函数的结果返回。
+}
+
+var status = bake(350);//被调用并返回时，作为结果返回的字符被赋给变量STATUS
+```
+
+### 实参和形参的工作原理：【自己总结】
+形参，在函数里就像变量一样。函数调用时，把值赋给形参。  
+实参，对应形参，可以是值，可以是变量，也可以是表达式。
+实参把值传给形参，是将实参的值的副本传给形参；实参本身不受影响，在形参被函数加工时，实参的值不变。（对象是例外，后面再补充）
+
+### 详解包含 return语句 的函数的执行过程
+return 包含一个作为函数调用结果返回的值或表达式。  
+跟踪执行过程，简称“跟踪 tracing”。
+```js
+function calculateArea(r) {               //3：实参传给形参r，函数开始执行
+  var area;                               //4: 声明area
+  if (r <= 0) {                           //5：检查r值，如果true，
+    return 0;                             //（如果true,返回0，退出函数)
+  } else {                                //6：执行子句else
+    area = Math.PI * r *r;                //7：使用r值执行计算（圆的面积）并赋值给area
+    return area;                          //8：返回area值到函数外，并退出函数
+  }
+}
+
+var radius = 5.2;                         //1:定义变量
+var theArea = calculateArea(radius);      //9+2:2-调用函数，radius作实参;9-将函数返回的值赋给 theArea
+
+console.log("The area is :" + theArea);   //10：执行打印日志
+```
+【自己调整过，跟书里有些不同】    
+
+### 问答
+- 函数的命名规则与变量的一样：  
+  - 有意义
+  - 指出函数的作用
+  - 使用驼峰法
+- 形参名和实参名可以一样，但是它们实质上是不同的变量，修改形参的值不会导致实参的值发生变化。 
+- 函数没有 return 语句，将返回 undefined . 【默认为undefined,但不赋值给变量时，不会输出或显示这个默认值undefined】  
+
+### 作用域
+变量的定义位置决定了其作用域。  
+如果变量是在函数外声明的，就可在代码的任何地方使用它;  
+如果变量是在一个函数中声明的，就只能在这个函数中使用它。  
+这被称为变量的作用域 scope 。  
+作用域分两种：全局(global)和局部(local)。  
+
+如果你在网页中链接到了其他的脚本，它们将能够看到这些全局变量。—p101
+只有一个全局作用域，因此加载的每个文件看到的变量都是相同的。-p108
+【一个文件中的全局变量在其他链接的脚本中也是可用的。】  
+
+`全局变量的寿命`与网页一样长。全局变量在 JavaScript 代码加载到网页之后降生，并在网页消失后死去。`重新加载`网页时，将`销毁并重新创建`所有全局变量。  
+`局部变量`通常在函数结束时消失。局部变量是在函数被调用后创建的，并一直活到函数返回。“通常”是因为有一些高级技巧可稍微延长局部变量的寿命。  
+
+
+当全局变量和局部变量同名时， -p104  
+【局部变量会被函数优先使用，即“遮住”了全局变量。在函数外，全局变量的值没有改变。】  
+它们是彼此独立的变量。  
+
+尽量使用局部变量，  
+正确地组织代码，以确保正确性、提高可维护性和遵循良好的编码风格。  
+只有在迫不得已的情况下使用全局变量。  
+【根本的原因在于值，在于变量代表的值，或说值的集合，值的来源。  
+对值的合理使用需要局部变量】  
+老徐：变量尽量是局部的，尽量跟它们的逻辑代码在一起。  
+
+### 问答
+- 形参也会遮住相应的同名全局变量。只要在函数中不使用该全局变量，遮住它就没有什么关系，但最好使用注释对这一点进行说明。  
+- JS 在函数形如执行时创建所有的局部变量，而不管这些变量是否已经声明（这被称为`提升`）。  
+  最好在函数开头定义变量，一来可读性更强，二来确保变量在语句执行前已定义。
+- JS 对`代码的结构`要求不严。导致全局变量常常被过度使用。因为不需要规划就可直接编写代码。
+- JS 提供了对象等特性，能够以`模块化`的方式组织代码。
+
+### 函数可以放在 JS 文件的任何地方
+JS 不在乎函数是在使用前还是使用后声明的。
+```js
+var radius = 5;
+var area = circleArea(radius); // 定义前就调用函数
+alert(area);
+
+function circleArea(r) {       // 调用后才定义
+  var a = Math.PI *r *r;
+  return a;
+}
+```
+浏览器分两遍读取网页：第一遍读取所有函数的定义，第二遍开始执行代码。    
+
+### 练习:无名装置
+据说是阶乘。
+Q: 看不懂。 facky = facky * size 直接让人头晕。  以后看 -p110  
+【相当于 i = i + 1 吗？】
+
+### 代码整洁要求
+- 在开头声明全局变量
+- 浏览器实际上首先在 js 代码中找出函数【没说是相对变量还是相对别的什么】  
+通常将全局变量放在开头，接着定义函数。 并将函数尽量放在一起。  
+【除了函数和全局变量，还有什么？】
+- 在函数开头声明局部变量：【上面已讲过类似的，提高可读性，并确保使用前正确声明了它们】
+
+### 侦探练习
+```js
+var balance = 10500;                  // 存款余额，全局变量
+var cameraOn = true;                  // 模拟监视器打开着
+
+function steal(balance, amount) {     // 形参balance是局部变量，遮住全局变量
+  cameraOn = false;                   // 没有 var 或其他关键字，提升为全部变量，监视器被关掉
+  if (amount < balance) {
+    balance = balance - amount;
+  }
+  return amount;                      // 返回被盗金额
+  cameraOn = true;                    // 不能被执行
+}
+
+var amount = steal(balance, 1250);    // 虽然调用了balance,全局变量的值仍不变
+alert("Criminal: you stole " + amount + "!");
+```
+重点在于全局变量 balance的值没有变。Q: 怎么样才会改变？  
+前面的全局变量，比如 radius，是被计算成新的变量，如 area。
+
+### 要点
+- 函数是一种很好的代码组织方式，它创建可重用的代码块。 
+
+# 4. 数组
+
+字符串、数字、布尔值是基本类型。  
+数组，表示多个值，按顺序排列。是一种可存储很多值的数据类型。
+
+访问数组的元素：数组名[索引]  
+索引从 0 开始
+```js
+var scores = [60, 50, 60, 58, 54, 54, 58, 50, 52, 54]
+
+var solution2 = scores[2];  // 第三个元素
+
+```
