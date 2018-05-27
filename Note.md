@@ -615,11 +615,228 @@ alert("Criminal: you stole " + amount + "!");
 字符串、数字、布尔值是基本类型。  
 数组，表示多个值，按顺序排列。是一种可存储很多值的数据类型。
 
-访问数组的元素：数组名[索引]  
-索引从 0 开始
+### 访问数组的元素：数组名[索引]  
+索引从 0 开始， 每个索引都存储一个值。
 ```js
 var scores = [60, 50, 60, 58, 54, 54, 58, 50, 52, 54]
 
 var solution2 = scores[2];  // 第三个元素
 
 ```
+
+### 数组的工作原理
+```js
+var flavors = ["vanilla", "butterscotch", "lavender", "chocolate", "cookie dough"]
+```
+### 访问：如上
+
+### 修改数组元素
+第4个元素被修改
+```js
+flavor[3]="vanilla chocolate chip";
+```
+### 确定数组的长度
+属性是一个与数组相关联的值。后面再详细介绍。  
+
+每个数组都有属性length，指出数组当前包含多少个元素。  
+```js
+var numFlavors = flavors.length; // 获取数组长度
+```
+
+### 自动造句应用程序（随机抽取数组元素进行组合）
+```js
+<!doctype html>
+<html lang="en">
+<head>
+  <title>Phrase-o-matic</title>
+  <meta charset="utf-8">
+  <script>
+  <!-- 随机抽取数组中的元素，组合在一起。-->
+    function makePhrases() {
+      var words1 = ["24/7", "multi-tier", "30,000 foot", "B-to-B", "win-win"];
+      var words2 = ["empowered", "value-added", "oriented", "focoused", "aligned"];
+      var words3 = ["process", "solution", "tipping-point", "strategy", "vision"];
+
+      var rand1 = Math.floor(Math.random() * words1.length);
+      var rand2 = Math.floor(Math.random() * words2.length);
+      var rand3 = Math.floor(Math.random() * words3.length);
+
+      var phrase = words1[rand1] + " " + words2[rand2] + " " + words3[rand3];
+      alert(phrase);
+    }
+  makePhrases();
+  </script>
+</head>
+<body></body>
+</html>
+```
+
+`  var rand1 = Math.floor(Math.random() * words1.length);`  
+0<= x <1, 0<= x*length < length  
+`words1[rand1]`  
+抽取元素  
+
+### 问答
+- 数组元素的数量：
+受制于计算机的内存量。（浏览器只是计算机运行的众多程序之一）具体数量取决于元素的类型。数组包含的元素越多，程序的运行速度就越慢。因此大多数情况下，都应将数组的长度限制在合理范围内，如数百个元素。    
+【app的用户数据那么多，是怎么处理的？是很多独立的对象？】  
+- 数组中的值不必是相同的。但通常在一个数组存储相同类型的值。  如果在同一个数组中存储不同类型的值，为避免所做的事情不合理，在代码中使用该数组中的每个值之前，必须检查其类型。一般而言，在数组中存储类型相同的值时，处理起来将更容易、更安全。  
+
+### 迭代数组
+输出每个元素索引及其对应的元素：
+```js
+var scores = [60, 50, 60, 58, 54, 54,
+              58, 50, 52, 54, 48, 69,
+              34, 55, 51, 52, 44, 51,
+              69, 64, 66, 55, 52, 61,
+              46, 31, 57, 52, 44, 18,
+              41, 53, 55, 61, 51, 44];
+
+//
+// with a while loop
+//
+var output;  // 在循环中使用这个变量来存储要输出的字符串【Q: 循环中的变量是全局的吗？所以在外在内都是全局？
+var i = 0;  // 存储当前索引的变量
+
+while (i < scores.length) {  //只要索引小于数组长度，就继续循环
+  output = "Bubble solution #" + i + " score: " + scores[i];
+  console.log(output);
+	i = i + 1;                 // 再次循环前将索引+1
+}
+```
+
+找出哪些口味的冰淇淋中有泡泡糖，即找出 products中的某个元素，这个元素对应 hasBubbleGum 中的 true 元素，它们的索引在数值上是一样的。 
+```js
+var products = ["Choo Choo Chocolate", "Icy Mint", "Cake Batter", "Bubblegum"];
+
+var hasBubbleGum = [false,
+                    false,
+                    false,
+                    true];
+
+var i = 0;
+while (i<hasBubbleGum.length) {
+  if (hasBubbleGum[i]) {
+    console.log(products[i] + " contains bubble gum.");
+  }
+  i = i + 1;
+}
+```
+
+### for 循环 （更好的迭代方式）
+把 while循环
+```js
+var i = 0;  
+
+while (i < scores.length) {  
+  output = "Bubble solution #" + i + " score: " + scores[i];
+  console.log(output);
+	i = i + 1;                 
+}
+```
+改成
+```js
+for (var i = 0, i < scores.length, i = i + 1) {
+  output = "Bubble solution #" + i + " score: " + scores[i];
+  console.log(output);
+}
+```
+除了把 i + 1 的代码移到 for 语句中，其他方面与 while 循环中完全相同。  
+
+#### 改写上面查找元素的 while 循环：
+```js
+var products = ["Choo Choo Chocolate", "Icy Mint", "Cake Batter", "Bubblegum"];
+
+var hasBubbleGum = [false,
+                    false,
+                    false,
+                    true];
+
+
+for (var i = 0; i<hasBubbleGum.length; i = i + 1) {
+  if (hasBubbleGum[i]) {
+    console.log(products[i] + " contains bubble gum.");
+  }
+}
+```
+
+
+#### 改写： while 迭代输出数组 
+输出每个元素索引及其对应的元素：
+```js
+var scores = [60, 50, 60, 58, 54, 54,
+              58, 50, 52, 54, 48, 69,
+              34, 55, 51, 52, 44, 51,
+              69, 64, 66, 55, 52, 61,
+              46, 31, 57, 52, 44, 18,
+              41, 53, 55, 61, 51, 44];
+
+//
+// with a for loop
+//
+var output;  
+for (var i = 0;  i < scores.length; i = i + 1 ) {  
+  output = "Bubble solution #" + i + " score: " + scores[i];//每次循环都创建一个字符串
+  console.log(output);
+}
+```
+Q: p142 分隔字符串的配对引号是什么？
+
+
+#### 后递增运算符 ++
+post-increment operator  
+`i = i + 1`等于`i++`    
+```js
+for (var i = 0;  i < scores.length; i = i + 1 )
+// 等于
+for (var i = 0;  i < scores.length; i++ )
+```
+#### 后递增运算符 ++
+post-decrement operator  
+`i = i - 1`等于`i--`
+
+
+### 创建空数组并在其中添加元素
+之前讲过指定索引，把元素赋值给索引的方式，如下
+```js
+var genres = []; // 长度为零，也是一个数组“字面量” Q:什么叫字面量？
+genres[0] = "Rockabilly";
+genres[1] = "Ambient";
+var size = genres.length;
+
+```
+这种方式在指定索引时，必须小心，如果有的索引没有指定到，漏空了，数组将是稀疏的（squarse）。  
+#### 添加元素的新方式 push方法
+无需指定索引  
+```js
+var genres = []; 
+genres.push("Rockabilly");
+genres.push("Ambient");
+var size = genres.length;
+
+```
+
+### 问答
+
+- 循环变量（如 i)仅用于迭代，循环结束后就不再需要它了。因此在for语句中声明，让代码更整洁。
+- 数组实际上是一种特殊的对象，而对象可以有相关联的函数，用于操作对象。    
+  在array数组中，array.push("value")，可`将 push 视为一个可对数组进行操作的函数`。元素本身是以实参的方式传递给 push , 在数组末尾添加一个新元素。
+- 稀疏数组中，索引处元素为空时，值即为 undefined 。这些空值也会占用计算机内存。  
+- undefined 不是字符串，不用加引号。
+- 检查元素的值是不是 undefined:
+```js
+  if (array[i] == undefined) {
+    ...
+  }
+```
+
+- 前面创建的数组都是字面量，还有其他这样的语法：
+```js
+var myarray = new Array(3);
+// 新建一个数组，其中包含3个空位置，即长度为3，但不包含任何值。
+```
+Q:这是说“字面量”是“直接量”的意思？
+
+
+
+
