@@ -30,10 +30,15 @@ Flash 一度是很多人开发交互式网页和动态网页的首选，但行�
 作为一种通用的脚本语言，JS的使用范围不再局限于浏览器，还用于从图形工具到音乐应用程序的众多应用程序中，甚至用于服务器端编程。  
 #### JavaScript 是不是编译型语言吗？
 脚本语言通常是解释型的，这意味着浏览器执行它遇到的每行 JS 代码。脚本语言不那么看重运行阶段性能，而更强调灵活性，因此更适合用于完成原型开发和交互式编码等任务。JavaScript 最初是解释性的，因此多年来其性能始终不那么高。然而，还有一条中间路线，即可对解释型语言进行即时编译。
-#### Q: 本书将使用术语解释、评估和执行，在不同的上下文中，它们的含义存在细微的差别，但在本书中，它们基本是一回事。
+
+  
+#### Q: 本书将使用术语解释、评估和执行，在不同的上下文中，它们的含义存在细微的差别，但在本书中，它们基本是一回事。  
+
 #### JS 历史： Q:p6,暂略
+
 #### HTML和CSS是声明型的，JS 则要是给网页添加行为，为此需要对计算进行描述。
 比如，对所有的正确答案求和，以计算用户的得分;用户单击按钮时，播放表示获胜的声音;取回我最的发布的消息，并将其放到这个网页中。
+
 ### 如何编写语句
 - 创建HTML时，你通常`对文本`进行`标记`，以`指定其结构`。比如，哪里是标题，哪些是段落。  
 - 使用CSS时，编写一系列规则，其中每条`规则`都`指定`了网页中的`元素`及其`样式`。
@@ -51,12 +56,14 @@ Flash 一度是很多人开发交互式网页和动态网页的首选，但行�
   }
   ```
   ### 变量和值
-  JS 语句通常包含变量。变量用于存储值。
+  JS 语句通常包含变量。变量用于存储值。  
+    
   ### 变量命名
   1. 以字母、下划线或美元符号打头。
   2. 使用任意数量的字母、数字、下划线或美元符号。
   3. 不要使用任何内置关键字。
-  4. 区分大小写。
+  4. 区分大小写。  
+    
   ##### 以$开头的变量名通常保留于JS库;有些作者根据各种约定使用以_开头的变量名。除非有充分理由，否则不要使用这两种变量名。
    
 ### 表达式
@@ -761,7 +768,7 @@ for (var i = 0; i<hasBubbleGum.length; i = i + 1) {
 ```
 
 
-#### 改写： while 迭代输出数组 
+#### 改写： 迭代输出数组 while to for 
 输出每个元素索引及其对应的元素：
 ```js
 var scores = [60, 50, 60, 58, 54, 54,
@@ -777,7 +784,7 @@ var scores = [60, 50, 60, 58, 54, 54,
 var output;  
 for (var i = 0;  i < scores.length; i = i + 1 ) {  
   output = "Bubble solution #" + i + " score: " + scores[i];//每次循环都创建一个字符串
-  console.log(output);
+  console.log(output);  // => Bubble solution #0 score: 60 类推
 }
 ```
 Q: p142 分隔字符串的配对引号是什么？
@@ -795,6 +802,30 @@ for (var i = 0;  i < scores.length; i++ )
 post-decrement operator  
 `i = i - 1`等于`i--`
 
+### 找到数组中的最大值
+
+```js
+var scores = [60, 50, 60, 58, 54, 54,
+              58, 50, 52, 54, 48, 69,
+              34, 55, 51, 52, 44, 51,
+              69, 64, 66, 55, 52, 61,
+              46, 31, 57, 52, 44, 18,
+              41, 53, 55, 61, 51, 44];
+
+var highScore = 0;  // 定义新变量，初始化为零，用于存储最高得分
+var output;  
+for (var i = 0;  i < scores.length; i = i + 1 ) {  
+  output = "Bubble solution #" + i + " score: " + scores[i];
+  console.log(output);
+
+  if (score[i] > highScore) {     // 找出最高得分，（假设）当69>68时，
+    highScore = score[i];         // highScore = 69 , Q:回头再看看
+  }
+}
+
+console.log("Bubbles tests: " + score.length);  //  => 36
+console.log("Highest bubbles score:" + highScore); // =>69
+```
 
 ### 创建空数组并在其中添加元素
 之前讲过指定索引，把元素赋值给索引的方式，如下
@@ -835,8 +866,330 @@ var size = genres.length;
 var myarray = new Array(3);
 // 新建一个数组，其中包含3个空位置，即长度为3，但不包含任何值。
 ```
+后面详解。  
+
 Q:这是说“字面量”是“直接量”的意思？
 
 
+### 显示数组中最大值的索引
+步骤：  
+1. 循环1：找出最高得分 （上面已实现）
+2. 循环2：找出最高得分的索引
+3. 把索引添加进新的空的数值
+
+```js
+var bestSolution = [];
+
+for ( var i = 0; i < scores.length; i++) {
+  if (scores[i] == highScore) {
+    bestSolutions.push[i];
+  }
+}
+
+console.log("Solutions with the highest score: " + bestSolutions);
+```
+console.log 直接显示整个数组（在控制台）。  
+如果要逐一显示数组元素，可再创建一个循环。
+
+```js
+var bestSolution = [];
+
+for ( var i = 0; i < scores.length; i++) {
+  if (scores[i] == highScore) {
+    var j = 0;
+    bestSolutions[j]=highScore;
+    j++;
+
+  }
+}
+
+console.log("Solutions with the highest score: " + bestSolutions);
+```
+#### 发现情况：对数组的不同显示
+
+书里写着，数组的输出竟然是没有方括号的。
+```js
+console.log("Solutions with the highest score: " + bestSolutions); 
+// => Solutions with the highest score: 11, 18 
+```
+ 
+但书里是在浏览器环境测试代码的，换到node终端再试一下。
+于是，把代码放到 js 文件上到终端运行。 结果也是一样。  
+于是，再单独打印 bestSolutions ，这里显示数组格式了。
+
+```js
+console.log(bestSolutions); // => [ 11, 18 ]
+```
+
+Q:是否 console.log 在 进行 + 运算时，把数组转换为 字符串了？
+
+集中对比：
+```js
+// (省略其他代码)
+console.log("Solutions with the highest score: " + bestSolutions); 
+// => Solutions with the highest score: 11, 18 
+console.log(bestSolutions); // => [ 11, 18 ]
+```
+
+
+
+### 快速审视代码
+
+#### 代码重构
+重构 refactor，指的是在不改变代码功能的情况下，对其进行重新组织，使其更易于理解和维护。换句话说，重构后代码的功能与以前完全相同，但组织更加有序。  
+
+#### 整段代码合起来
+找出最大值元素，显示最大值对应的索引：
+```js
+var scores = [60, 50, 60, 58, 54, 54,
+    58, 50, 52, 54, 48, 69,
+    34, 55, 51, 52, 44, 51,
+    69, 64, 66, 55, 52, 61,
+    46, 31, 57, 52, 44, 18,
+    41, 53, 55, 61, 51, 44];
+
+//
+// find the highest score(s)
+//
+var highScore = 0;  
+var output;  
+for (var i = 0;  i < scores.length; i++) {  
+  output = "Bubble solution #" + i + " score: " + scores[i];
+  console.log(output);
+
+  if (score[i] > highScore) {     
+    highScore = score[i];         
+  }
+}
+
+console.log("Bubbles tests: " + scores.length);
+console.log("Highest bubble score: " + highScore);
+
+//
+// find the best solution
+//
+var bestSolutions = [];
+for (var i = 0; i < scores.length; i++) {
+  if (scores[i] == highScore) {
+    bestSolutions.push(i);
+  }
+}
+console.log("Solutions with the highest score: " + bestSolutions);
+}
+```
+
+`函数重构`:  
+- 自己的重构过程：  
+思考了一下为什么要改成函数，是为了复用，以及使用代码的方便;那么，是把一段实现某个功能的代码集中到函数里，用函数名来调用。照这个思路把实现功能的整段代码都先复制进函数体内;一开始先不想形参的问题，因为也可能不用形参。复制完，看着代码发现数组可以做形参。但没有想到返回值的事情，因为潜意识里觉得 console.log就是输出值。这是错的。console.log只是把结果打印出来给人看，给函数用的应该是从 return 输出。 
+
+- 书中的重点步骤是：
+1. 要给函数传递哪些地实参
+2. 是否要返回值
+```js
+
+function printAndGetHighScore(scores) {    // scores 是形参，不是全局变量，不是数组名。
+  var highScore = 0;  
+  var output;  
+  for (var i = 0;  i < scores.length; i++) {  
+    output = "Bubble solution #" + i + " score: " + scores[i];
+    console.log(output);
+
+    if (scores[i] > highScore) {     
+      highScore = array[i];         
+    }
+  }
+
+  return highScore;
+}
+
+
+
+function getBestResults(highScore,scores) {
+  var bestSolutions = [];
+  for (var i = 0; i < scores.array.length; i++) {
+    if (scores[i] == highScore) {
+    bestSolutions.push(i);
+    }
+  }
+  return bestSolutions;
+}
+
+
+var highScore = printAndGetHighScore(scores);
+console.log("Bubbles tests: " + scores.length);
+console.log("Highest bubble score: " + highScore);  // 等调用了highScore所在的函数才打印
+
+var bestSolutions = getBestResults(highScore, scores);
+console.log("Solutions with the highest score: " + bestSolutions);
+
+```
+Q：如果getBestResults要改成柯里化，要怎么改？
+
+### 平行数组
+在拥有相同长度的不同的数组里，同样的索引处的值是相对应的。  
+
+costs数组的成本元素的索引也是配方号，对应 scores 里的得分。
+
+要找出性价比最高的配方，就是说得分最高而成本（率）最低的。  
+换句话说，就是成本较低
+
+```js
+
+var scores = [60, 50, 60, 58, 54, 54,
+    58, 50, 52, 54, 48, 69,
+    34, 55, 51, 52, 44, 51,
+    69, 64, 66, 55, 52, 61,
+    46, 31, 57, 52, 44, 18,
+    41, 53, 55, 61, 51, 44];
+
+var costs = [.25, .27, .25, .25, .25, .25, .33, .31,  // 百分比。默认配方的
+             .25, .29, .27, .22, .31, .25, .25, .33, 
+             .21, .25, .25, .25, .28, .25, .24, .22,
+             .20, .25, .30, .25, .24, .25, .25, .25, 
+             .27, .25, .26, .29];
+
+function getMostCostEffectiveSolution(scores, costs, highscore) {
+  for ( var i = 0; i < scrores.length; i++ ) {
+    
+    var cost = 100;    // 找最小时时初始化一个较大的数，找最大值时初始化为零，如 highscore。
+    if (score[i] == highScore) {
+      if (cost > costs[i]) {   // 要找costs[i]最小的值，因此表达式是cost > costs[i]
+        var index = i;
+        cost = costs[i];   // cost 值总是被重新（赋值）成元素里的值。这“=”不是定义变量时的“=”，左右是循环里的“=” 。 Q:回头再看看
+      }
+    }
+  }
+  return index;
+
+}
+var mostCostEffective = getMostCostEffectiveSolution(score, costs, highscore);
+console.log("Bubble Solution #" + mostCostEffective + " is the most cost effective");
+```
+
+使用前面的bestSolution函数：
+
+```js
+function getMostCostEffectiveSolution(costs, bestSolution) {
+  for (var i = 0; i < bestSolution.length; i++) {
+    var j = bestSolution[i];
+
+    var cost = 100;
+    if (cost > costs[j]) {  // 自己用了 while。要决策（比较出结果），得用 if 。
+      cost = costs[j];
+      var index = j;
+    }
+  }
+  return index;
+}
+```
+
+教材配套的代码答案：参考命名
+```js
+function getMostCostEffectiveSolution2(bestSolutions, costs) {
+	var cost = 100;
+	var solutionIndex;
+	var lowCostIndex;
+
+	for (var i = 0; i < bestSolutions.length; i++) {
+		solutionIndex = bestSolutions[i];
+		if (cost > costs[solutionIndex]) {
+			lowCostIndex = solutionIndex;
+			cost = costs[solutionIndex];
+		}
+	}
+	return lowCostIndex;
+}
+```
+
+但是，万一成本率最低的配方，得分不是最高的，有可能是成本率与得分的乘积最高。那这样做就不对了。
+Q:想好了回头来看要不要写代码。
+
+### 要点
+- 试图访问不存在的元素将返回 undefined。  
+  之前在问答里说到 访问[-1]或超过数组长度的索引时，都是返回 undefiend。   
+  【想像一个数组的元素的可见索引是在0到长度-1，其他位置（小于1，大于等于长度的位置），是不可见的，因为不可见也没有赋值，所以这些位置没有赋值，也就返回undefined的了。】
+- 给既有元素赋值将修改元素。  
+  【想像成是 var 声明的变量】
+- 给不存在的元素赋值将在数组中新建一个元素。  
+Q: 如果给数组的 -1 索引添加值，会怎么样？
+
+- for 循环在一条语句中包含变量初始化、条件测试和变量递增。  
+- while 循环最常用于不知道需要循环多少次时，它循环到条件满足为止。 for 循环最常用于知道循环需要执行多少次时。  
+  【而且 while 的条件范围可能比较大 可以用 == 。 for 可不可以用 == ，等验证。Q 】
+- 函数可帮忙组织代码。organize（填字） 
+- 赋值 assign （填字）
+
+# 5. 对象
+(前面四章)使用简单语句、条件、for/while 循环和函数来编写代码，这种编码方式的`过程化`程序极高,`不是面向对象`的。    
+  
+Q:这里的`过程化`跟函数式编程上的`面向过程`有差别吧？差别是什么？
+`面向对象`编程的优势在哪里？
+
+### 对象  
+- 管理复杂代码
+- 理解浏览器对象模型和组织数据的关键
+- 组织数据
+- 是很多 JS 库的基本组织方式
+
+### 属性
+
+### 创建对象
+创建一个包含一系列属性的对象，并将其赋给了一个变量，以便使用它来访问和修改这个对象的属性。  
+可以传递这个对象、获取其中的值、修改其中的值、添加属性或删除属性。
+
+#### 对象类型的格式
+- 属性名：遵循变量名的命名规则
+- 不重名
+- 属性名有空格时，必须用引号
+- 分号结束
+
+### 面向对象
+面向对象编程中，从对象的角度考虑问题，而对象有状态和行为。  
+【函数式编程可不可以看作是把行为或过程封装在函数对象里，通过函数对象来调用行为或过程。可以看成既是面向对象也是面向过程，吗？】 
+
+【怎么修改属性名？可以把对象当作数组一样，先用索引读取“名值对”吗？然后再修改整个“名值对“。  
+有没有办法直接修改属性名？但好像没有必要？没有应用的场景？应该直接在代码里手动修改而已？】  
+
+### 对象的工作原理
+```js
+var fiat = {
+  make: "Fiat",
+  model:  "500",
+  year: 1957,
+  color:  "Medium Blue",
+  passengers: 2,
+  convertible:  false,
+  mileage:  88000
+};    // 分号结束
+```
+
+#### 访问对象
+- 句点表示法
+  如， `fiat.mileage`
+  可以在任何表达式中使用属性
+
+#### 修改属性
+将一个新值赋给属性即可。
+```js
+fiat.mileage = 10000;
+```
+
+#### 添加新属性
+指定新属性并给它赋值。自动添加到对象中的最后一位。  
+也就是说，添加的属性名在对象里原来是不存在的；如果存在，变成修改了原有的属性值。
+```js
+fiat.needsWashing = true; 
+```
+
+#### 将属性用于计算
+像使用变量（或值）一样使用它们。  
+```js
+if (fiat.year < 1965) {
+  classic = true;
+}
+for (var i = 0; i < fiat.passengers; i++) {
+  addPersonToCar();  // 当车上乘客数小于对象中的载客数，则一直可以增加人数
+}
+```
 
 
