@@ -465,7 +465,9 @@ saveMyProfile(student, year, 381/100, status == "newuser");
 形参只需要定义一次，但函数会被多次调用，而且每次的实参可能不同。
 
 ### JS 按值传递实参
-这意味着传递的是实参的副本。    
+<em id = "锚1"></em>  
+
+这意味着传递的是`实参的副本`。    
 
 按值传递（pass-by-value)，这意味着每个实参的值复制给形参。  
 【这是什么逻辑？因为实参的值不变吗?还真是这样。】 
@@ -1192,4 +1194,457 @@ for (var i = 0; i < fiat.passengers; i++) {
 }
 ```
 
+#### 删除属性
+```js
+delete fido.dogYears;
+```
+若成功删除属性，delete 表达式将返回 true。    
+如果要删除的属性在对象中不存在，也会返回 true。  
+仅当属性无法删除时，delete 才返回 false。比如对象属于浏览器而受到保护。
 
+
+### 问答
+#### 动态的添加属性
+```js
+var lookMaNoProps = {};
+lookMaNoPros.age = 10;
+if (lookMaNoPros.age > 5) {
+  lookMaNoProps.school = "Elementary";
+}
+```
+#### 对象相对变量的优势
+- 对象封装了数据的复杂性，让你能够专注于代码的高层次设计，而不是细枝末节。
+- 封装（隐藏）对象状态和行为的复杂性
+
+#### 访问不存在的属性
+表达式 对象名.属性名 的结果为 undefined。
+
+### 变量是如何存储对象的
+对于基础类型：数字、字符串和布尔值，变量存储这些值。  
+
+  `引用`：一种获取特定对象的途径。  
+
+- 变量并不实际存储对象。
+- `变量存储指向对象的引用`。【变量引用对象】  
+- 引用就像指针，是`对象的存储地址`
+- 换句话说，变量并不存储对象本身，而是存储类似于指针的东西。
+- 当我们使用句点表示法时， JS 解释器将负责根据引用获取对象并访问其属性。
+【有一个地方专门存储对象的地方，变量指向对象，变量是对象的地址】   
+```js
+car.color;
+```
+访问`变量 car 引用的对象`的属性 color 。
+
+### 比较基本类型和对象
+参考上一部分 变量是如何存储对象的 即可。  
+基本型是存储，对象是引用。  
+
+### 使用对象
+选车要求：
+- 1960年或更早生产
+- 里程 不超过10 000英里
+
+```js
+function prequal(car) {
+  if (car.mileage > 10000) {    // 当 true 时，
+    return false;               // 返回 false。且退出函数
+  } else if (car.year > 1960) {
+    return false;
+  }
+  return true;
+}
+
+var taxi = {
+  make:"Webville Motors",
+  model:"Taxi",
+  year:1995,
+  color:"yellow",
+  passengers: 4,
+  covertible: false,
+  mileage: 281341
+}
+
+var worthALook = prequal(taxi);
+
+if (worthALook) {
+  console.log("You gotta check out this " + taxi.make + " " +taxi.model);
+} else {
+  console.log("You should really pass on the " + taxi.make + " " + taxi.model);
+}
+
+```
+
+### 向函数传递对象的情况
+【  
+先回顾：   
+<a href="#锚1">链接 到 基本型</a>  
+基本型的按值传递：  
+函数在使用的全局的存储基本型变量时，即实参传给形参时，只是传递实参的副本，不会修改实参变量的原始值。  
+】  
+
+#### `按值传递`对`对象`来说意味着什么？  
+将对象赋给变量时，变量存储的是指向对象的引用，而不是对象本身。  
+传递给形参 的是该引用的副本。  
+形参变量和实参指向同一个对象。  
+这意味着什么呢？一个最大的不同是，如果在函数中修改对象的属性，修改的将是原始对象的属性。因此，函数结束时，在函数中对对象所做的修改都依然有效。      
+
+【  
+再理解：  
+传递的是引用的副本，不是对象的副本。引用和引用的副本都是指向同一个对象。将通过`引用和引用的副本`修改对象时，解释器或执行器并没有创建对象的副本，因此，修改的是原始对象。一句话，对象没有创建副本对象，对象还是那个对象。  
+那么，按值传递，总的来说，  
+是按 `数值大小或同异`来复制，我这个值跟你那个值是一样的。基本型的传递，是复制了另一个基本型，值一样。  
+对象的传递，因为对象是存储在另一个地方，复制的是引用，是“地址”的值，指向的还是同个对象。  
+】  
+
+## 理解对象
+```js
+function makeCar() {
+  var makes = ["Chevy","GM","Fiat","Webville Motors","Tucker"];
+  var models = ["Cadillac", "500", "Bel-Air", "Taxi", "Torpedo"];
+  var years = [1955, 1957, 1948, 1954, 1961];
+  var colors = ["red", "blue", "tan", "yellow", "white"];
+  var convertible = [true, false];
+
+  var rand1 = Math.floor(Math.random() * makes.length);
+  var rand2 = Math.floor(Math.random() * models.length);
+  var rand3 = Math.floor(Math.random() * years.length);
+  var rand4 = Math.floor(Math.random() * colors.length);
+  var rand5 = Math.floor(Math.random() * 5) + 1;  // passenger qty
+  var rand1 = Math.floor(Math.random() * 2);
+
+  var car = {
+    make: makes[rand1],
+    model: models[rand2],
+    year: years[rand3],
+    color: colors[rand4],
+    passengers: rand5,
+    convertible: convertible[rand6],
+    mileage: 0
+  };
+  return car;
+}
+
+function displayCar(car) {
+  console.log("Your new car is a " + car.year + " " + car.make + " " + car.model);
+}
+
+var carToSell = makeCar();
+displayCar(carToSell);
+```
+从函数返回对象与返回其他值没什么两样。  
+
+### 给对象添加行为
+
+对象是`活动的`，
+
+
+```js
+var fiat = {
+  make: "Fiat",
+  model:  "500",
+  year: 1957,
+  color:  "Medium Blue",
+  passengers: 2,
+  convertible:  false,
+  mileage:  88000
+
+  drive: function() {
+    alert("Zoom zoom!");
+  }
+};    
+```
+
+将函数定义赋给属性。  
+在函数定义中没有指定函数名。属性名就是函数名。 【Q: 那么，循环或条件的标签语句 的标签用法 就相当于属性名？又或者，只是标签只是给循环或条件增加了可调用的变量名】
+对象内的函数，为方法。      
+
+调用函数/方法 drive ，
+`fiat.drive()`  
+
+### 改进方法 drive
+让 fiat 对象的行为更像汽车。启动发动机开动汽车：
+- 一个布尔属性 started：用于存储汽车的状态（发动机是否开启）;
+- 两个方法，分别用于启动和熄灭发动机: start, stop
+- 在方法drive中检查条件，确保仅当发动机启动后才能开动汽车
+
+```js
+var fiat = {
+  make: "Fiat",
+  model:  "500",
+  year: 1957,
+  color:  "Medium Blue",
+  passengers: 2,
+  convertible:  false,
+  mileage:  88000,
+  started: false,
+
+  start: function() {
+    started = true;      // 直接使用属性名更改属性
+  },
+
+  stop: function() {
+    started = false;
+  },
+
+  drive: function() {
+    if (started) {
+      alert("Zoom zoom!");
+    } else {
+      alert("You need to start the engine first.");
+    }
+    
+  }
+};    
+```
+【如果把start 外面的属性看作是变量，那么这些变量却是可以改变的，因为是对象里的变量/属性。所以，对象是另一个世界。在这个世界里的规则与外面的大世界的规则是不一样的。】  
+
+
+`使用方法来修改属性`是另一种`封装`方式。通常可改善代码的可维护性和可扩展性。 -P200 
+【方法是对象里的函数。跟一般的函数一样，方法可以提高代码的重用程度，也就是将对象的一系列行为封装在函数里，使得跟对象有关的代码可以重用。】 
+
+
+### 测试对象 fiat
+```js
+fiat.drive();
+fiat.start();
+fiat.drive();
+fiat.stop();
+```
+
+### 关键字 this
+this: 当前所处的对象  
+【严格说，应该是方法当前所在的`上一级`对象。因为 越级就没用了。】  
+
+改进上面的方法
+```js
+var fiat = {
+  make: "Fiat",
+  ...
+  started: false,
+
+  start: function() {
+    this.started = true;      // 直接使用属性名更改属性
+  },
+
+  stop: function() {
+    this.started = false;
+  },
+
+  drive: function() {         
+    if (this.started) {       // 已被 start 修改为 true
+      alert("Zoom zoom!");
+    } else {
+      alert("You need to start the engine first.");
+    }
+    
+  }
+};  
+```
+
+### 测试 this
+```js
+var song = {
+  name:"Walk This Way",
+  artist: "Run-D.M.C.",
+  minutes: 4,
+  seconds: 3,
+  genre: "80s",
+  playing: false,
+
+  play: function() {
+    if (!this.playing) {   // !this.playing = !false = true
+      this.playing = true;
+      console.log("Playing " + this.name + " by " + this.artist);
+    }
+  },
+
+  pause: function () {
+    if (this.playing) {
+      this.playing = false;
+    }
+  }
+}
+
+song.play();
+song.pause();
+```  
+### this 的工作原理
+可将 this 视为一个变量，指定其方法被`调用`的对象。【对象里的方法被调用了，this 指向这个对象】
+
+将对象赋值给 this。
+
+```js
+var fiat = {
+  make: "Fiat",
+  ...
+  started: false,
+
+  start: function() {
+    this.started = true;    // JS 把对象赋给 this
+  }，
+  ...
+};  
+
+fiat.start();               // 当我们调用方法时，
+```
+
+### 迭代对象的属性
+以便知道一个对象包含哪些属性
+
+#### for in 
+以每次一个的随机的方式遍历对象的属性，并依次将每个属性赋值给变量 prop 。
+```js
+for ( var prop in chevy) {
+  console.log(prop + ": " + chevy[prop]);  // 可以[]方括号表示法通过 prop 来访问当前属性
+
+}
+```
+
+方括号表示法：  
+`chevy["color"]`  
+与句点表示法的功能是一样的。但方括号表示法更灵活，  
+`chevy["co" + "lor"]`   
+可将`任何表达式`放在方括号内，只要其结果表示属性名的字符串值即可。
+
+### 行为如何影响状态
+
+对象的属性记录对象的状态，如油位，里程。   
+对象的方法实现行为，如加油，发动汽车。  
+状态和行为相互影响。  
+
+```js
+// 给车加油
+
+var fiat = {
+  make: "Fiat",
+  model: "500",
+  //...
+  started: false,
+  fuel:0,               // 添加新属性，存储汽车的油量。没有油，车子就开不动。
+
+  start: function() {   // 后面改进
+    this.started = true;      
+  },
+
+  stop: function() {
+    this.started = false;
+  },
+
+  drive: function() {         
+    if (this.started) {
+      if (this.fuel > 0) {            //  开动前检查是否有油
+        alert(this.make + " " + this.model + " goes zoom zoom !");
+        this.fuel = this.fuel - 1;
+      } else {
+        alert("Uh oh, out of fuel."); // 没油了
+        this.stop();
+      }
+    } else {
+      alert("You need to start the engine first.");
+    }
+    
+  },
+
+  addFeul: function(amount) {         // 添加新方法，加油，加多少只要在调用时指定
+    this.fuel = this.fuel + amount;   // amount 是一个函数形参
+  }
+
+}
+
+
+fiat.start();  
+fiat.drive();
+fiat.addFuel(2);
+fiat.start();
+fiat.drive();
+fiat.drive();
+fiat.drive();
+fiat.stop();
+
+```
+
+改进 start
+
+```js
+// 自己写的
+start: function {
+  if (this.fuel > 0) {
+   this.started = true;
+  } else {
+   alert("The car is on empty,fill up before starting.");
+  }
+}
+
+// 书里答案
+start: function {
+  if (this.fuel == 0) {  // 注意 == 
+   alert("The car is on empty,fill up before starting.");
+  } else {
+   this.started = true;
+  }
+}
+```
+
+#### 后面会讲到：
+如何使用相同的代码创建完全相同的对象，而且这些代码只出现在一个地方。这将涉及如何`设计面向对象的代码`。  
+（即，不用在相同的汽车对象里，重复编写 start、 stop 等代码）
+
+### 要点
+- 对象变量也叫引用变量。
+- this：在对象的方法中使用对象的属性
+
+### 英文
+- 句点 dot
+- 冒号 colon
+- 逗号 comma
+- 状态 state
+- 行为 behavior
+- 关键字  keyword
+- 引用 reference
+- 方法 method
+- Q: 通常将属性名指定为一个 word 。 这里 word 指什么 ？
+
+# 6. DOM
+必须知道如何与代码所属的网页交互。只有这些，才能编写出动态网页：能够对用户操作作出响应的网页，能够在加载后自动更新的网页。与网页交互，需要使用 DOM 。  
+
+```html
+<!doctype html> 
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Dr. Evel's Secret Code Page</title>
+</head>
+<body>
+<p id="code1">The eagle is in the</p>
+<p id="code2">The fox is in the</p>
+<p id="code3">snuck into the garden last night.</p>
+<p id="code4">They said it would rain</p>
+<p id="code5">Does the red robin crow at</p>
+<p id="code6">Where can I find Mr.</p>
+<p id="code7">I told the boys to bring tea and</p>
+<p id="code8">Where's my dough? The cake won't</p>
+<p id="code9">My watch stopped at</p>                 <!--有交互-->
+<p id="code10">barking, can't fly without umbrella.</p> <p id="code11">The green canary flies at</p>
+<p id="code12">The oyster owns a fine</p>
+<script src="code.js"></script>
+</body>
+</html>
+```
+
+```js
+// code.js
+var access = 
+  document.getElementById("code9");  // 指向元素。元素也是一个对象类型。
+var code = access.innerHTML;         // 指向元素的内容（文本）
+code = code + " midnight";           // 修改内容 Q: html被修改了吗？
+alert(code);
+```
+`document`是一个全局对象。
+  
+`document.getElementById` 返回一个 element对象：
+【  
+通过 id 指向一个 HTML 元素。
+element 指的就是 HTML 文档里的元素吧，比如 p 。  
+】
+  
+`innerHTML` 指向元素的内容，即标记中间的文本。  
