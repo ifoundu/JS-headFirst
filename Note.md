@@ -1636,7 +1636,7 @@ start: function {
 var access = 
   document.getElementById("code9");  // 指向元素。元素也是一个对象类型。
 var code = access.innerHTML;         // 指向元素的内容（文本）
-code = code + " midnight";           // 修改内容 Q: html被修改了吗？
+code = code + " midnight";           // 修改内容 
 alert(code);
 ```
 `document`是一个全局对象。
@@ -1647,4 +1647,472 @@ alert(code);
 element 指的就是 HTML 文档里的元素吧，比如 p 。  
 】
   
-`innerHTML` 指向元素的内容，即标记中间的文本。  
+`innerHTML` 是元素对象的属性，指向元素的内容，即标记中间的文本。    
+
+网页是一个动态的`数据结构`，可通过 JS 与之交互： 可以访问并读取网页中元素的内容，还可以修改网页的内容或结构。    
+
+### JS 如何与网页交互 
+JS 和 HTML 是两样不同的东西： HTML 是标记，而 JS 是代码。它们如何交互呢？这是通过网页的表示，即文档对象类型(DOM)实现的。 DOM 是浏览器在加载网页时创建的。 创建过程如下：  
+
+
+- 浏览器加载网页时，不仅对 HTML 进行分析并将其渲染到显示器，还创建一系列表示标记的对象。这些对象存储在 DOM 中。
+- JS 代码可通过与 DOM 交互来访问元素及其内容，还可使用 DOM 来创建或删除元素。
+- JS 代码修改 DOM 时，浏览器将动态地更新网页，让用户能够在网页中看到新内容。
+
+#### HTML 由声明式标记组成，描述一系列组成网页的嵌套元素; JS 由算法组成，用于对计算进行描述。让 JS 能够访问网页中的任何元素的是 getElementById 。
+
+### 使用 getElementById 获取元素
+document 是一个内置对象，有很多属性和方法，包括从 DOM 中获取一个元素的 getElementById。方法 getElementById `接收一个 id ，并返回该 id 指定的元素`。  
+
+
+使用 getElementById 从 DOM 获取元素时，得到的是一个元素对象。  
+使用它来读取、修改或替换元素的内容和特性。修改元素时，所做的修改也将反映到网页中。    
+
+HTML 元素对象也有属性和方法。可以使用其属性和方法来读取和修改元素。  
+
+可以对元素对象进行的操作：  
+- 获取内容（文本或 HTML）
+- 修改内容
+- 读取特性
+- 添加特性
+- 修改特性
+- 删除特性
+
+
+```js
+var planet = document.getElmentById("greenplanet");
+// 变量 planet 包含一个元素对象———— id 为greenplanet的 p 元素。
+planet.innerHTML = " Red alert : hit by phaser fire!";
+// 可使用元素对象的属性 innerHTML 来修改元素的内容, 网页发生变化
+
+console.log(planet.innerHTML);
+```
+
+还可以根据 类 class 来选择元素，后面会介绍。
+
+### 问答
+- 如果 id 不存在， getElmentById 将返回 null。【也就是没有接收到实参】  
+  调用 getElmentById 时，检查返回的是否是 null 是个不错的主意。
+- getElementsByClassName 可根据 class 获取元素集合。
+- getElementsByTagName 可根据 标签名 获取元素集合。
+- outerHTML 表示元素内部的 HTML 以及元素本身。用得不多。
+
+【 innerHTML 就是内部的 超文本标记语言，因此包括 href,em,img 等内容。】 
+
+### 处理 DOM 时，确保代码在网页完全加载后再执行。
+否则 getElementsById将返回 null。浏览器按原来的文档进行渲染。  
+
+如果查看控制台，大多数浏览器会显示错误消息。  
+`Uncaught TypeError:Cannot set property 'innerHTML' of null `
+
+比如：当代码在 head 中时
+```html
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Planets</title>
+    <script>
+      var planet = document.getElmentById("greenplanet");
+      planet.innerHTML = " Red alert : hit by phaser fire!";
+      </script>
+  </head>
+  <body>
+    <h1>Green Planet</h1>
+    <p id="greenplanet">All is well</p>
+    <h1>Red Planet</h1>
+    <p id="redplanet">Nothing to report</p>
+    <h1>Blue Planet</h1>
+    <p id="blueplanet">All systems A-OK</p>
+  </body>
+</html>
+``` 
+=> All is well.  网页没有修改。  
+
+修复办法之一，可将代码移动 body 元素的末尾。
+
+另一个更简单的办法，通过代码。  
+
+### window 对象
+window 对象是 JS 内置对象，表示浏览器窗口。它指定在网页加载完毕后才执行的代码。  
+它将调用你赋给其属性onload 的函数，但仅在网页加载完毕后才这样做。
+
+- 创建一个函数，其中包含要在网页加载完毕后执行的代码。
+- 将这个函数赋给对象 window 的属性 onload 。
+
+```js
+function init() {
+  var planet = document.getElmentsById("greenplanet");
+  planet.innerHTML = "Red alert: hit by phaser fire!";
+}
+
+window.onload = init;  // 不是调用，只是赋值
+```
+
+- 加载网页
+- 创建完整 DOM
+- 调用函数 init
+- 【渲染网页】
+
+#### 回调函数
+
+假设有重大的事件（如网页加载完毕）即将发生，而你必须在其发生后第一时间获悉。对于这种情形，一种常见的处理方式是使用回调函数[callback,也叫 事件处理程序 event handler]。  
+
+`工作原理`：  
+给了解事件的对象提供一个函数;事件发生后，这个对象将通过调用这个函数来通知你。  
+
+事件：  
+- 浏览器生成的，如加载事件
+- 用户与网页交互时生成的： 用户单击按钮后，需要从表单获取数据时
+- JS 代码生成的
+
+```html
+<!doctype html>
+<html lang="en">
+  <title>My Playlist</title>
+  <meta charset="utf-8">
+  <script>
+    function addSongs() {
+      var song1 = document.getElementsById("song1");
+      var song2 = document.getElementsById("song2");
+      var song3 = document.getElementsById("song3");
+
+      song1.innerHTML = "Blue Suede Strings, by Elvis Pagely";
+      song2.innerHTML = "Great Objects on Fire, by Jerry JSON Lewis";
+      song3.innerHTML = "I Code the Line, by Hohnny JavsScript";
+
+    }
+
+    window.onload = addSongs;
+    </script>
+  </head>
+  <body>
+    <h1>My awesome playlist</h1>
+    <ul id="Playlist">
+      <li id="song1"></li>   <!--空列表，代码将给每个 li 元素添加内容-->
+      <li id="song2"></li>
+      <li id="song3"></li>
+    </ul>
+  </body>
+  </html>
+```
+在一个静态网页中添加代码，从而动态地修改了一个段落的内容。创建真正交互式网页的第一步。
+  
+第二步，用代码设置元素的特性。  
+
+### 使用 setAttribute 设置元素的特性
+元素对象有一个 setAttribute 方法，可调用它来设置 html 元素的的特性。
+
+```js
+planet.setAttribute("class", "redtext");
+```
+将在 html 中添加`类`特性
+```html
+<p id="greenplanet" class="redtext"></p>
+```
+
+接收两个实参：
+- 要添加或修改的`特性`名称
+- 要设置的特性`值`   
+
+如果指定的特性不存在，将在元素中创建它。
+
+### 获取特性
+
+获取特性值，使用方法 getAttribute。
+
+```js
+var scoop = document.getElementsById("raspberry");
+var altText = scoop.getAtrribute("alt");  // alt：图片的替代说明
+console.log(altText);
+```
+如果指定的特性不存在，将返回 null 。
+
+检查返回是否为 null :
+```js
+var scoop = document.getElementsById("raspberry");
+var altText = scoop.getAttribute("alt");
+if (altText == null) {                            // 检查
+  console.log("Oh, I guess there isn't an alt attribute.");
+} else {
+  console.log(altText);
+)
+```
+
+getElementsById 也会返回 null。在实践中，务必检查返回的是否为 null 。
+
+整合修改内容和添加特性的代码：
+
+```html
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Planets</title>
+    <style>                           <!---->
+      .redtext { color:red; }
+    </style>
+    <script>
+      function init() {
+      var planet = document.getElmentById("greenplanet");
+      planet.innerHTML = " Red alert : hit by phaser fire!";
+      planet.setAttribute("class", "redtext");     <!---->
+      }
+
+      window.onload = init;                        <!---->
+      
+      </script>
+  </head>
+  <body>
+    <h1>Green Planet</h1>
+    <p id="greenplanet" >All is well</p>       <!-- 代码执行后将添加 class="redText"，段落字体将变红色--> 
+    <h1>Red Planet</h1>
+    <p id="redplanet">Nothing to report</p>
+    <h1>Blue Planet</h1>
+    <p id="blueplanet">All systems A-OK</p>
+  </body>
+</html>
+``` 
+### 要点
+- 在浏览器`内部`，使用文档对象模型 DOM 来表示网页。
+
+
+# 7.类型、相等、转换等
+
+### undefined
+
+所属类型：undefined
+
+返回 undefined 的情况：
+- 使用未初始化的变量
+- 访问不存在（或已删除）的属性
+- 使用不存在的数组元素
+
+检查变量是否是未定义的
+```js
+var x;
+
+if (x == undefined) {
+  // 
+}
+```
+属性是否定义
+```js
+var customer = {
+  name: "Jenny"
+}
+
+if (customer.phoneNumber == undefined) {
+  //
+}
+```
+
+### 问答
+- 什么情况下，需要检查变量等是否是未定义的？
+  这取决于你的代码设计。如果变量等可能没有值，就需要检查。
+
+#### typeof
+是内置的 JS 运算符，可检查其操作数的类型, 返回该操作数的类型
+
+```js
+var subject = "Just a string";
+var probe = typeof subject;
+console.log(probe); // => string
+```
+
+```js
+typeof []; // => object
+typeof true; // => boolean
+typeof {}; // => object
+typeof function (){}    // => function
+typeof null; // => object
+```
+
+### null
+所属类型：object
+对象不存在时的值，如果变量指向的对象不存在，也是Null（不是undefined)。
+undefined 是变量、属性、数组元素不存在时的值。
+null 用于表示对象不存在。
+
+【可以这样想，undefined 表示数据的`值不存在`，null 表示`数据名和值都不存在`。   
+null 分两种情况，  
+一种是变量或字符串或对象不存在;  
+一种是没有对象赋给变量，也就是不管有没有变量名，对象不存在，就是 null。】    
+
+Q: 如果是数组不存在呢？应该也是null，因为数组是(特殊的)对象。
+
+假设网站有一个天气小部件，用户可以找开它，也可以关闭它。如果用户打开了它，就会有一个 id 为 weatherDiv 的 div 元素。  
+```js
+var weather = document.getElementById("weatherDiv");
+if (weather != null) {
+  //
+}
+```
+如果 getElementById 返回不是 null， 就说明网页中有这样的元素，那么创建一个天气小部件。  
+
+### NaN
+它的类型，属性于 number。
+表示`无法表示`的数值结果。比如 0/0，在计算机中无法表示其结果，JS 使用 NaN 来表示它。  
+是 JS 中唯一一个与自己不相等的值
+`NaN != NaN`
+
+```js
+var a = 0/0; // 数字中，这没有明确的答案。
+var b = "food" * 1000; // 不知道结果是什么，但肯定不是数字
+var c = Math.sqrt(-9); // 负数的平方根是虚数，在JS中无法表示
+``` 
+
+### 检查NaN
+NaN 与任何数据，包括它自己，都不相等。  
+检查时使用特殊函数 isNaN 。传入的值不是数字时返回 true 。  
+【`是NaN` 即 `不是数字`】  
+【但是，  
+NaN 只是`不是数字`集合中的一个情况。字符串也不是数字。  
+```js
+isNaN('z'); // => true
+```
+
+】
+
+```js
+if (isNaN(myNum)) {
+  myNum = 0;
+}
+```
+
+### 问答
+- NaN 或 不是数字的值，将其传递给 isNaN 时，它将返回 true
+- 为什么NaN与自己不相等？因为并非所有无法表示的数字都相同。  
+- Infinity 的类型为数字，指超过浮点数上下限的值。  
+  怀疑某个值太大时，可检查它是否为Infinity:  
+  ```js
+  if (tamale == Infinity) {
+    alert("That's a big tamale!");
+  }
+  ```
+- 将 Infinity 与它自己相减时，结果为 NaN 。
+
+
+### 相等运算符
+
+
+进行比较时，运算符==会考虑其操作数（要比较的两个值）的类型。  
+存在两种情况：  
+
+#### 两个值的类型相同，就直接进行比较
+相同时，结果为true
+
+
+#### 类型不同，则尝试将它们转换为相同的类型，再进行比较
+如果一个是数字，一个是字符串，JS 将把字符串转换为数字，再进行比较。    
+(在其他语言里，转换通常不是自动进行的。)
+
+
+```js
+99 == "99"; // => true
+
+// 过程
+99 == 99;
+```
+
+### 相等运算符如何转换操作数
+JS `比较`的工作原理
+了解“转换是何时以及进行的”  
+
+#### 4种简单情况
+
+1. 比较数字和字符串
+上面是字符串可以转换为数字的情况。
+当字符串不能转换为数字时，  
+```js
+99 == "vanilla"
+99 == "ninety-nine"
+// 转换后都是
+
+99 == NaN
+
+// => false
+
+```
+
+2. 比较布尔值 和其他类型
+
+- 布尔值与数字比较
+  - 将把布尔值转换成数字， true 是 1， false 为 0
+  - 比较
+  ```js
+  1 == true
+
+  // 转换
+  1 == 1
+
+  // 返回 true
+  ```
+
+- 布尔值与字符串比较： 需要执行额外的步骤
+```js
+"1" == true
+
+// 转换
+"1" == 1
+
+// 再转换
+1 == 1
+
+// 返回 true
+// 两边都是转换为数字进行比较
+```
+
+3. 比较 null 和 undefined 
+结果为 true  
+都是`没有值`，没有值的变量和没有值的对象。
+
+4. 注意一些特殊情况
+
+```js
+1 == ""
+
+// 转换
+1 == 0
+
+// 返回 false
+```
+
+另外，对象的比较，后面会介绍。
+
+
+【其实，不同类型的比较，都会转换为`数值`来比较】
+
+### 严格相等
+相等运算符除了 == （相等），还有 === （严格相等）  
+
+`==` 可以对两个类型不同的操作数进行比较
+`===`表示：当且仅当两个值的类型和值都相同时，才是严格相等的。如果类型不同，返回 false 。
+
+### 问答
+- <= 和 >= 只比较字符串和数字
+  【其中的 = 就相当于 == 。因为这里是运算符，不是赋值符号】
+- <= 转换
+```js
+99 <= "100"
+
+//转换
+99 <= 100
+
+// 返回 true
+```
+
+- `!==`也是只比较类型相同的值。
+
+- `<` 和 `>` 适用 `==` 的规则
+```js
+0 < true
+
+// 转换
+0 < 1
+
+// 返回 true
+``` 
+
+
+
