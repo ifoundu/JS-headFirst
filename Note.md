@@ -2114,5 +2114,332 @@ JS `比较`的工作原理
 // 返回 true
 ``` 
 
+- 字符串大小的比较
+  根据字母排列顺序，小写时，在前为小
+  ```js
+  "banana" < "mango" // => true
+
+  "mango" < "melon"  // => true
+
+  "mango" < "Mango"  // => false
+
+  ```
+  大写转换为数字比小写的小。    
+  字符串的排列顺序取决于计算机中用于表示各个字符的Unicode值的排列顺序。Unicdoe 是一种以数字方式表示字符的标准。    
+
+  【计算机中的一切数据都是数字...】
 
 
+### 类型转换
+条件语句会导致类型转换。  
+其他几个运算符也可能导致类型转换。  
+要知道类型转换可能`在什么情况下`和`什么地方`发生。
+
+#### 再谈拼接和加法运算符
+用于数字时，运算符+表示加法运算，  
+而用于字符串时，表示拼接concatenation 。  
+
+如果+的操作数的类型不同：   
+只要+两边有一个是字符串，+运算符就认为是字符串拼接
+
+- 数字和字符串相加
+  将数字转换为字符串，再拼接
+```js
+var addi = 3 + "4";
+
+//转换
+var addi = "3" + "4";
+
+// 返回
+var addi = "34";
+```
+```js
+var plusi = "4" + 3; // => "43"
+```
+有一个情况要注意：  
+```js
+var order = 1 + 2 +" pizzas";
+// 第一个 + 号 是 加法运算，
+// 第二个 + 号 是 拼接。
+// + 的结合性是从左到右，
+// 结果是 "3 pizzas"
+
+// 为确保得到想要的结果，可使用括号来指定先执行的运算
+var order = (1 + 2) + " pizzas";
+
+// 确保结果是 "12 pizzas"
+var order = 1 + (2 + " pizzas");
+```
+
+
+
+其他算术运算符，  
+如乘法、除法、减法， JS 认为都是算术运算，而不是字符串运算。  
+将字符串转换为数字
+
+```js
+var multi = 3 * "4"; // 3*4=>12
+var divi = 80 / "10" // =>8
+var mini = "10" - 5  // =>5 
+
+```
+
+特殊情况  
+运算符-对数字取负，将其用于true时，结果为-1。  
+【布尔值 转换为数字】  
+布尔值和字符串相加，结果为字符串。如 true + " love" =>"true love"  
+【布尔值:遇到字符串，以字符串为准;遇到数字以数字为准】
+
+- 让字符串转换为数字，用函数Number
+Number接收一个实参，并将其转换为数字;  
+如果实参无法转换为数字，Number将返回 NaN 。
+```js
+var num = 3 + Number("4"); //=>7
+```
+
+#### 自己总结
+【  
+`==`：数字优先   
+`<=`、`>=`、`<`、`>` ：数字优先 ,遵循 `==`一样的规则，也就是`比较符号`统一的规则。
+
+
+`+` ：字符串优先  
+`-` : 数字优先  
+】 
+
+### 如何判断两个对象是否相等
+
+比较两个对象变量时，实际上比较的是`指向对象`的`引用`。  
+只要两个引用指向的对象不是``同一个`，它们就不相等。  
+仅当两个引用指向的是`同一个`对象时，它们才相等。
+
+### 真值
+在 JS 中， 用于条件表达式中时，判断结果为 true 的是真值，结果为 false 的是假值。
+只需知道哪些值是假值，余下的其他所有值就都是真值。  
+在 JS 中，假值只有5个：
+```js
+undefined  
+null  
+0  
+空字符串 "" // " " 有空格则不是空字符串。
+NaN
+```
+
+以下均为 false
+```js
+var testThis;
+if (testThis) {
+  //
+}
+
+var element = document.getElementById("elementThatDosentExist");
+if (element) {
+  //
+}
+
+if (0) {
+  //
+}
+
+if ("") {
+  //
+}
+
+if (NaN) {
+  //
+}
+```
+
+除假值外的其他值都是真值（不包括 false )  
+以下都是真值  
+```js
+if ([]) {
+  //
+}
+
+var element = document.getElementById("elementThatDoseExist");
+if (element) {
+  //
+}
+
+if (1) {} 
+
+var string = "mercy me";
+if (string) {}
+```
+
+### 字符串
+
+JS 的数据类型分为两大类，基本型 和 对象。  
+字符串在 JS 中，可创建作为基本型的字值串，也可创建作为对象的字符串（支持大量的字符串操作方法）。  
+无须特地创建`字符串对象`，因为 JS 解释器会在需要时替你做。  
+什么情况下，JS 解释器会自动创建字符串对象呢？  
+【在你使用了方法的时候】
+```js
+var name = "Jenny";
+var phone = "867-5309";
+var fact = "This is a prime number";
+
+var songName = phone + "/" + name;
+
+var index = phone.indexOf("-");
+if (fact.substring)(10, 15) === "prime") {
+  alert(fact);
+}
+```
+【其实，字符串和对象本来不就是同个原理吗？都是数据的排列。】
+
+### 问答
+- 除非使用对象构造函数，否则，字符串都是基本类型。
+- 数字和布尔值也可以像对象一样，但不像字符串那样有那么属性。  
+
+### 字符串方法和属性简明教程
+
+- 属性 length
+字符串的长度
+- 方法 charAt
+获取字符串中指定索引处的字符
+如果索引大于或等于字符串长度，这个方法将返回一个空字符串。
+
+` JS 没有字符类型，因此通过返回一个字符串来返回字符，其中只包含指定的字符。`  
+【Q:暂时不确定是什么意思。大概是别的语言还有字符类型，而类型会带有特定属性。】  
+
+```js
+var input = "jenny@wickedlysmart.com";
+for(var i = 0; i < input.length; i++) {  // 迭代字符串的字符
+  if (input.charAt(i) === "@") {   //  当迭代到的索引处是字符“@”时，为 true 。
+    console.log("There's an @ sign at index " + i);
+  }
+}
+```
+
+- 方法 indexOf
+将`字符串a`作为参数，并根据`字符串b`中该参数首次出现的位置，返回该参数中第一个字符在字符串b中的索引。  
+```js
+var phrase = "the cat in the hat";
+
+var index = phrase.indexOf("cat");
+console.log("there's a cat sitting at index " + index); 
+// => There's a cat sitting at index 4.
+
+// 返回 第一个 cat 中字符 c 在长字符 phrase 中的索引。
+```
+
+还可以指定第二个参数。它是一个索引，指定从什么位置开始查找。  
+```js
+index = phrase.indexOf("the", 5);
+// 忽略第一个 the
+```
+
+如果没有找到指定的字符串，将返回索引-1
+```js
+index = phrase.indexOf("dog");
+console.log("there's is dog sitting at index " + index);
+// index => -1
+```
+
+- 方法 substring
+将两个索引作为参数，提取并返回这两个索引之间的`子串`。
+
+```js
+var data = "name|phone|address";
+var val = data.substring(5, 10); // 不包括 10
+console.log("Substring is now " + val);
+// val=> phone 
+
+// 可以省略第二个参数;在这种情况下，substring 将提取从指定索引到字符末尾的子串。
+val = data.substring(5);
+console.log("Substring is now " + val);
+// val => phone|address
+// 【第二参数默认了，是 length (不包括 length )。
+```
+
+- 方法 split
+将一个用作分隔符的字符作为参数，并根据这个分隔符将字符串分成多个部分。
+【并将这些部分放在一个字符串数组里】
+```js
+var data = "name|phone|address";
+var vals = data.split("|");
+console.log("Split array is ", vals); 
+// vals => ["name", "phone", "address"]
+```
+
+用逗号，而不是+号，才不会把数组vals转换为字符。`+` ：字符串优先  
+
+- toLowerCase  
+所有大写转换成小写
+- toUpperCase  
+所有小写都转换为大写
+- slice  
+删除字符串的一部分
+- replace  
+查找子串并将它们替换为另一个字符串
+- lastIndexOf  
+查找最后一个子串
+- match  
+查找与正则表达式匹配的子串
+- trim  
+删除字符串开头和末尾的空白字符，为处理用户输入提供了极大便利。  
+- concat  
+将字符串拼接起来
+- 
+
+### 熟悉类型
+
+#### 检查电话号码是否符合"123-4567"格式 
+
+- 字符串长度是否为8
+- 连接符是否存在
+- 前段和后段是否为数字
+
+```js
+
+function validate(phoneNumber) {
+  if (phoneNumber.length !== 8) {
+    return false;
+  }
+  var first = phoneNumber.substring(0, 3);
+  var second = phoneNumber.substrig(4);
+  if (phoneNumber.charAt(3) !== "-" || isNaN(first) || isNaN(second)) {
+    return false;
+  }
+  return true;
+}
+```
+
+`isNaN(first)`会自动转换类型，将字符串转换为数字 。  
+【Q: 前面好像没有说过单一类型的转换，如果真的没有，也可以理解为，在数值环境下，字符串也会被转换为数值。就像在比较符的数值环境下。】
+
+
+#### 检查电话号码是否符合"123-4567"或"1234567"格式 
+
+```js
+function validate(phoneNumber) {
+  if (phoneNumber.length > 8 ||
+      phoneNumber.length < 7) {
+    return false;
+  }
+  var first = phoneNumber.substring(0,3);
+  var second = phoneNumber.substring(phoneNumber.length - 4);//最后四个字符
+
+  if (isNaN(first) || isNaN(second)) {
+    return false;
+  }
+
+  if (phoneNumber.length === 8) {
+    return (phoneNumber.charAt(3) === "-");
+ }
+  return true;
+}
+```
+
+- 字符串长度是否为8： .length
+- 连接符是否存在: charAt()  
+- 前段和后段是否为数字: substring()、isNaN  
+
+用正则表达式  
+```js
+function validate(phoneNumber) {
+  return phoneNumber.match(/^\d{3}-?\d{4}$/);
+}
+```
