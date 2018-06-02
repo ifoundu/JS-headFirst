@@ -78,6 +78,9 @@ var controller = {
     if (location) {
       this.guesses++;
       var hit = model.fire(location);
+      if (hit && model.shipsSunk === model.numShips) {
+        view.displayMessage("You sank all my battleships,in " + this.guesses + "guesses");
+      }
     }
   }
 }
@@ -104,7 +107,41 @@ function parseGuess(guess) {
 }
 
 
+function init() {
+  var fireButton = document.getElementById("fireButton");
+  fireButton.onclick = handleFireButton;
+  // 添加一个新的处理程序，用于处理 html 输入字段的`按键事件` -Q
+  var guessInput = document.getElementById("guessInput");
+  // console.log(guessInput.onkeypress); 运行时，打印的是 null。说明事件onkeypress是动态添加的。
+  guessInput.onkeypress = handleKeyPress;
+}
 
+
+
+function handleFireButton() {
+  /* 获取表单中的玩家输入。访问属性 value */
+  var guessInput = document.getElementById("guessInput");
+  var guess = guessInput.value; // Q: 还没有在HTML里添加value属性的代码
+  /* 将输入交给控制器 */
+  controller.processGuess(guess);
+
+  guessInput.value="";//输入清零
+}
+
+window.onload = init;
+
+
+
+// 当用户按键时都会触发
+function handleKeyPress(e) { // e:传入一个事件对象 Q：猜测是内置的键盘所有按键代码的对象（输入的参数），回车键是键盘的一个属性，值为13。
+  var fireButton = document.getElementById("fireButton");
+  if (e.keyCode === 13) {
+      
+    // click 方法，让fireButton以为自己被单击
+    fireButton.click();
+    return false;
+  }
+}
 
 
 
