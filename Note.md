@@ -2473,8 +2473,95 @@ function validate(phoneNumber) {
       - 设置颜色
     - 指出是否击中战舰
       - 在玩家每次猜测后指出是否击中了战舰，即在游戏板的相应位置显示图像ship.png或miss.png。将 td 元素的背景设置为合适的图像。  
+    
+    .... 
+    p321 - p357的代码和过程
+    ....
+
+    - 获取玩家的猜测
+      - 玩家输入猜测 并 单击 fire! 按钮
+          ```js
+          function handleFireButton() {
+            /**/
+          }
+          ```
+      - Fire! 按钮被单击时，将调用一个预先指定的事件处理程序
+          ```js
+          function init() {
+            var fireButton = document.getElmentById("fireButton");
+            fireButton.onclick = handleFireButton;
+          }
+
+          function handleFireButton() {
+            /* 从表单中获取值的代码 */
+          }
+
+          window.onload = init;
+          ```
+      - 这个事件处理程序获取表单中的玩家输入，并将其交给控制器。
+    
+          ```js
+          
+
+          function handleFireButton() {
+            /* 获取表单中的玩家输入。访问属性 value */
+            var guessInput = document.getElementById("guessInput");
+            var guess = guessInput.value;
+            /* 将输入交给控制器 */
+            controller.processGuess(guess);
+
+            guessInput.value="";/*输入清零*/
+          }
+     
+
+          ```
+
+
+#### 编码技巧 - 按回车键事件的代码
+          ```js
+          function init() {
+            // 在“按钮元素”接收“单击”
+            var fireButton = document.getElementById("fireButton");
+            fireButton.onclick = handleFireButton;
+
+            // 添加一个新的处理程序，用于处理 html 输入字段的`按键事件` -Q
+            // 在“文本元素”接收“回车”，文本 id 为 guessInput
+            var guessInput = document.getElementById("guessInput");
+            // console.log(guessInput.onkeypress); 运行时，打印的是 null。说明事件onkeypress是（动态）添加的。
+            guessInput.onkeypress = handleKeyPress;
+          }
+
+          // 当用户按键时都会触发
+          function handleKeyPress(e) { // e:传入一个事件对象 Q：猜测是内置的键盘所有按键代码的对象（输入的参数），回车键是键盘的一个属性，值为13。
+            var fireButton = document.getElementById("fireButton");
+            if (e.keyCode === 13) {
+              // click 方法，让fireButton以为自己被单击
+              fireButton.click();
+              return false;
+            }
+          }
+          ```
+##### onclick 和 click
+P361：onclick 和 click 之前书里没有提到。这段逻辑没看明白。
+`网上说:`
+>click是一个方法，onclick是一个事件，
+其区别在于：
+　　1.事件名前一般都以on开头；
+　　2.方法是程序员写语句直接调用，即显示调用；【可以触发onclick事件】　　3.事件不需程序员调用，但是，必须由程序员写`一个函数且将该函数赋值给相应的事件`，其调用是在相应的事件触发时。【告诉浏览器在鼠标点击时候要做什么】所以调用顺序是：首先方法其次事件。
+
+【事件是由用户在电脑上调用的。方法是程序里调用的。】
+
+`整理思路:`
+onclick 的原理可参考 window.onload 。    
+- onload 是 window (即浏览器窗口)对象的一个属性（未存在，但可以像JS对象属性那样添加）。使用时，赋值一个函数给它。等窗口也可以说等用户在窗口打开html文件对应的网页来调用onload，进而调用了函数。  
+- onclick 是（一切）html 元素的一个属性。  使用时，也是赋值一个函数给它。等窗口传来单击的“信号”也可以说是用户单击了元素这个行为来调用 onclick，进行调用了函数。
+  
+
+
 
 ......
 
 #### 让每个对象只承担一项职责的好处之一是，可分别对每个对象进行测试。
 #### 相对于循环，indexOf 并不能提高效率，但是编写的代码更少。而且代码的意图也更清晰：使用indexOf时，更容易明白要在数组中查找什么值。  
+
+#### 要获取表单元素的值，可访问其属性 value
