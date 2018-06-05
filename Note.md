@@ -2454,7 +2454,6 @@ function validate(phoneNumber) {
 # 8. 综合运用
 
 项目需求：  
-- 第一个目标： 创建游戏板  
   - 需要设计结构，以便在 JS 中获取玩家输入以及显示击中、未击中等消息。  
     - 把网页的背景设置为图像
     - 在上面放置 html 表格：使用 html 表单来获取玩家输入
@@ -2475,7 +2474,7 @@ function validate(phoneNumber) {
       - 在玩家每次猜测后指出是否击中了战舰，即在游戏板的相应位置显示图像ship.png或miss.png。将 td 元素的背景设置为合适的图像。  
     
     .... 
-    p321 - p357的代码和过程
+    p321 - p357的代码和过程：代码都在文件 [battleship.js](8-Intergrated-Application/battleship.js) 里
     ....
 
     - 获取玩家的猜测
@@ -2515,6 +2514,9 @@ function validate(phoneNumber) {
      
 
           ```
+     - 随机生成战舰位置
+        - 方向选择
+        - 检查冲突
 
 
 #### 编码技巧 - 按回车键事件的代码
@@ -2554,7 +2556,7 @@ P361：onclick 和 click 之前书里没有提到。这段逻辑没看明白。
 `整理思路:`
 onclick 的原理可参考 window.onload 。    
 - onload 是 window (即浏览器窗口)对象的一个属性（未存在，但可以像JS对象属性那样添加）。使用时，赋值一个函数给它。等窗口也可以说等用户在窗口打开html文件对应的网页来调用onload，进而调用了函数。  
-- onclick 是（一切）html 元素的一个属性。  使用时，也是赋值一个函数给它。等窗口传来单击的“信号”也可以说是用户单击了元素这个行为来调用 onclick，进行调用了函数。
+- onclick 是（一切）html 元素的一个属性。  使用时，也是赋值一个函数给它。等窗口传来单击的“信号”也可以说是用户`单击`了元素这个行为来调用 onclick，进行`调用了函数`。【用户单击的动作调用了函数】
   
 
 
@@ -2565,3 +2567,292 @@ onclick 的原理可参考 window.onload 。
 #### 相对于循环，indexOf 并不能提高效率，但是编写的代码更少。而且代码的意图也更清晰：使用indexOf时，更容易明白要在数组中查找什么值。  
 
 #### 要获取表单元素的值，可访问其属性 value
+
+
+
+
+do while 循环：  
+原理与 while 几乎相同，只是先执行循环体中的语句，再检查循环条件。少用。  
+
+Math.floor(Math.random(numShips) *2 );
+
+
+【HTML 元素的属性或事件可以在 JS 里直接创建，不需要用 setAttribute 添加到 HTML 的元素里面。】
+
+
+# 9. 异步编码
+
+### 事件是什么
+在浏览器上单击按钮、鼠标位置发生变化、通过网络收到数据、窗口大小变化、定时器到期、浏览器位置发生变化等，都会触发`事件`。 【这些就是事件】 
+每当有事件发生时，都可以在代码中处理它，即提供将在事件发生时调用的代码。  
+
+### 事件处理程序
+处理程序通常是一小段代码，知道事件发生时该如何做。从代码的角度说，`处理程序就是一个函数`。事件发生时，其处理程序函数将被调用。  
+也可称为`回调函数`或`监听器`。   
+调用监听器：  `注册`它：取决于事件的类型  
+
+#### 创建第一个事件处理程序：
+事件处理示像之一：网页加载事件。 
+网页加载事件的 `触发时间点`是：浏览器加载完网页、显示网页的所有内容并生成了表示网页的`DOM` 。  
+
+`事件处理的工作原理 示例`：
+1. 首先，需要编写一个`处理`网页加载`事件`的`函数`。  
+   作用： 这个在网页加载完毕时`显示`“I'm alive”。 即，`在事件发生时，进行显示`。     
+
+```js
+// 处理程序就是一个函数。
+
+function pageLoadedHandler(){
+  alert(I'm alive!);
+}
+```
+2. 建立`关联`，让浏览器在加载事件发生时调用它。  
+
+
+```js
+【事件处理的原理分析：】
+
+1. 事件是什么? 网页加载（完毕）
+  - 在代码里用什么表示？ window.onload
+
+2. 处理什么？  显示。
+  - 显示什么？ 提示字符串（提醒）。代码： alert
+  - 用什么组织 alert ？用函数
+  - 函数怎么调用？ 赋值给 window.onload。
+  - 赋值 代表什么意思？ 事件发生时，调用函数，也就是进行“处理”。
+
+结论：处理函数 赋值给 事件。
+``` 
+
+使用 window 对象的属性 onload
+```js
+window.onload = pageLoadedHandler. // 也就 指定处理程序
+``` 
+
+
+#### 测试事件处理程序
+
+```js
+<!doctype html>
+<html lang="en">
+<head>
+ <meat charset="utf-8">
+ <title>I'm alive!</title>
+ <script>
+  window.onload = pageLoadedHandler; <!--先赋值，网页加载完才调用。--> 
+  function pageLoadedHandler() {
+    alert("I'm alive!");
+  }
+ </script>
+ </head>
+ <body>
+ </body>
+ </html>
+```
+
+## 异步方式
+线性的（linear）的编写代码方式，使代码按从上到下的顺序逐步编写代码。  
+战舰游戏的代码执行方式 不完全是线性的。代码对用户输入作出响应。  
+
+以`响应事件的方式`组织代码是另一种代码编写方式。  需要考虑可能发生的事件以及代码应如何响应这些事件 + 代码如何响应这些事件。  
+通常说这种代码是`异步`的 / asynchronous 。
+（另一种看待问题的角度）  
+将处理各种事件的众多处理程序整合起来，构成一个应用程序。  
+
+### 通过创建一个游戏来理解事件
+理解事件的最佳方式是实践。   
+
+【自已分析】：在网页加载完毕后，除网页加载以外的`其他事件的处理原理`：  
+网页加载事件   
+=> 定义函数 init 关联 window.onload   
+=> 在 init 中，其他事件，如onclick等，关联到函数 B   
+=> 定义另一个函数，处理其他事件。    
+
+任何其他事件的发生，都要在网页加载事件发生之后。【可能有的是在加载完之后，待整理。Q】
+
+#### 游戏需求：  
+加载一个网页，显示一幅图像。这幅图像很模糊。你的任务是猜出图像是什么。要核实是否猜对了，可单击图像，让它不再模糊不清。  
+
+[html文件](9-Async-Programming/asyncGame.html)
+
+```html
+<!doctype html>
+<html>
+<head lang="en">
+  <meta charset="utf-8">
+  <title>Image Guess</title>
+  <style> body {margin: 20px;}</style>
+  <script></script>
+</head>
+<body>
+  <img id="zero" src="zeroblur.jpg">
+</body>
+</html>
+```
+
+### 实现游戏
+每当网页中的 html 元素被单击（在移动设备上是触摸）时，都将触发一个事件。只需为这个事件创建一个处理程序，并在其中编写显示图像清晰版本的代码。  
+ 1. 访问 DOM 中的这个图像对象，并将其属性 onclick 设置为一个处理程序。
+ 2. 在这个处理程序中编写代码，将图像的 src 属性从模糊图像改为清晰图像。  
+
+第1步，访问 DOM 中的图像
+```js
+var image = document.getElementById("zero");
+```
+确保代码在网页 DOM 创建好之后再运行：
+```js
+window.onload = init;  
+function init() {
+ var image = document.getElementById("zero");
+}
+```
+
+第2步，添加更新图像的处理程序
+
+```js
+window.onload = init;  
+function init() {   // 加载事件处理程序
+ var image = document.getElementById("zero");
+ image.onclick = showAnswer; // 将一个处理程序赋给从 DOM 获取的图像对象的 onclick 属性。***
+}
+```
+将一个处理程序赋给从 DOM 中攻取的图像对象的 onclick 属性。***   
+【这句话说明，onclick 是 DOM 的一个属性。】
+
+编写函数showAnswer，它将图像元素的 src 元素改变清晰图像。  
+
+```js
+function showAnswer() {    // 单击后调用
+  var image = document.getElementById("zero");
+  image.src = "zero.jpg";
+}
+```
+
+### 问答
+- 并非所有 html 特性都有对应的对象属性，对于这些特性，必须使用 setAttribute　和 setAttribute 来设置和获取。  
+  对于 src 等而言，要设置和获取，可使用元素对象的相应属性`image.src`，也可使用 setAttribute　和 setAttribute 。
+  【类似第8章时已经用到的事件（onclick)，但没有讲到的知识点。】
+  【Q:哪些没有对应的对像属性，一定要用  setAttribute　和 setAttribute ？】
+
+### 添加更多图像
+
+CSS：增加
+```css
+img { margin: 20px;}
+```
+HTML：增加
+```html
+<img id="one" src="oneblur.jpg">
+<img id="two" src="twoblur.jpg">
+<img id="three" src="threeblur.jpg">
+<img id="four" src="fourlur.jpg">
+<img id="five" src="fiveblur.jpg">
+```
+
+
+### DOM 方法
+document.getElementsByTagName  
+这个方法将一个标签名（如 img 、p 或 div ）作为参数，并返回一个`列表`，其中包含`所有匹配的元素`。  
+比如 img 作为参数，将返回所有 img 图像。
+
+
+```js
+
+function init () {
+  var images = document.getElementsByTagName("img");
+  for (var i = 0; i < images.length; i++) {
+    images[i].onclick = showAnswer;
+  }
+}
+// 每幅图像的属性 onclick 都设置成了处理程序 showAnswer 。-p396
+```
+【onclick 是属性，所以 onclick 是元素对象 img 的一个属性】
+
+- `var images = document.getElementsByTagName("img")` 返回的是类似于数组的`对象列表`。但与数组又不完全相同。 (上面讲的“列表”)
+
+  - 实际上返回的是一个 NodeList 对象，但你可像处理数组一样处理它。NodeList 是一个 Node 集合，而 Node 指的其实是 DOM 树中的　element　对象。    
+  - 可以像数组一样迭代 Node 集合：使用 length 属性来获取长度，通过方括号括起的索引来访问 NodeList 的每个项目。然而，数组 和 NodeList 的相似之处仅此而已，因此处理 NodeList 对象时必须小心。
+  - 除非需要在 DOM 中添加或删除元素，否则不必对 NodeList 有更深入的了解。
+
+- onclick：任何网页中显示出来的元素，都支持单击事件，只需获取这个元素并将其 onclick 属性设置为一个函数即可。
+
+
+
+### 事件对象的工作原理
+单击事件处理程序【image.onclick = showAnswer;】被调用时，将向它传递一个`事件对象`。 大多数文档对象模型（DOM) 事件发生时，都会向相应的处理程序传递一个事件对象。
+
+```js
+// DOM 
+// 事件对象的工作原理: 事件对象是元素对象的一个属性。它本身带着以下这类属性：
+
+元素对象 {    // 触发事件的元素,"目标 target"
+  *事件*对象*: {  // event 对象
+    常规信息: {
+      事件类型:xxxxx,
+      目标 target: ( 作用看下面 ),
+      触发时机/何时触发:xxxxx,
+      
+      ...
+    },
+
+    特有信息: { // 取决于 this["事件类型"]
+      鼠标位置:xxxxx, // 单击事件特有.
+      ...
+    }
+  },
+
+
+  其他属性对象和方法：{
+    innerHTML,
+    class
+    alt,
+    src,
+    value,
+    ...
+    getAttribute,
+    setAttribute,
+    ...
+    
+  }
+
+}
+```
+
+target: 存储一个引用，指向触发事件的元素。【也是就这里的“元素对象” Q】
+
+```js
+function showAnswer(eventObj) {
+  var image = eventObj.target;
+}
+```
+
+
+#### 事件对象的几个属性，以及对应的额外信息
+- target： 存储着触发事件的对象。`可以是各种不同的对象`，但通常是元素对象。【以上原理以元素对象为分析基础。以后继续了解】
+- type: 是一个字符串，如“click”或“load”，指出了发生的是哪种事件。
+- timeStamp：事件何时发生
+- keyCode：用户刚刚按下哪个按键
+- clientX：用户单击的位置离浏览器窗口的左边缘有多远
+- clientY: 离上边缘有多远
+- touches: 在触摸设备上，可以确定用户使用了多少根手指来触摸屏幕。
+
+### 使用事件对象
+
+修改 
+```js 
+<img id="one" src="oneblur.jpg">
+```
+等 变成
+```js 
+<img id="one" src="one.jpg">
+```
+==>
+```js
+fcuntion shipwAwnswer(eventObj) {
+  var image = eventObj.target;   // 被单击的图像元素
+
+  var name = image.id;  // 直接用 image.id。不用 getAttribute;好像很少用。
+  name = name + ".jpg";
+  image.src = name;     // 
+}
+```
