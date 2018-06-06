@@ -10,26 +10,50 @@
   </style>
   <script>
     window.onload = init;
-    function init() {
-      var image = document.getElementById("zero");
-      image.onclick = showAnswer; //单击
-    }
+//  function init() {
+//      var image = document.getElementById("zero");
+//      image.onclick = showAnswer; //单击
+// } 
 
-    function showAnswer() {  // 单击后调用
-      var image = document.getElementById("zero");
-      image.src = "zero.jpg";
-    }
+
+// function showAnswer() {  // 单击后调用
+//      var image = document.getElementById("zero");
+//      image.src = "zero.jpg";
+//    }
+
+function init () {
+  var images = document.getElementsByTagName("img");
+  for (var i = 0; i < images.length; i++) {
+    images[i].onclick = showAnswer;
+  }
+}
+
+function showAnswer(eventObj) {
+  var image = eventObj.target;   // 被单击的图像元素。onclick 传入 事件对象参数
+
+  var name = image.id;  // 直接用 image.id。不用 getAttribute;好像很少用。
+  name = "images/" + name + ".jpg";
+  image.src = name;     // 修改
+
+  setTimeout(reblur, 2000, image); 
+}
+
+function reblur(image) {   
+  var name = image.id;         //新增。因为是被嵌套调用，所以 reblur可以读到 eventObj 的 image.id
+  name = "images/" + name + "blur.jpg";
+  image.src = name;
+}
 
   </script>
 </head>
 
 <body>
-  <img id="zero" src="zeroblur.jpg">
-  <img id="one" src="oneblur.jpg">
-  <img id="two" src="twoblur.jpg">
-  <img id="three" src="threeblur.jpg">
-  <img id="four" src="fourlur.jpg">
-  <img id="five" src="fiveblur.jpg">
+  <img id="zero" src="images/zeroblur.jpg">
+  <img id="one" src="images/oneblur.jpg">
+  <img id="two" src="images/twoblur.jpg">
+  <img id="three" src="images/threeblur.jpg">
+  <img id="four" src="images/fourlur.jpg">
+  <img id="five" src="images/fiveblur.jpg">
 </body>
 
 </html>
