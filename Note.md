@@ -2537,7 +2537,7 @@ function validate(phoneNumber) {
           function handleKeyPress(e) { // e:传入一个事件对象 Q：猜测是内置的键盘所有按键代码的对象（输入的参数），回车键是键盘的一个属性，值为13。
             var fireButton = document.getElementById("fireButton");
             if (e.keyCode === 13) {
-              // click 方法，让fireButton以为自己被单击
+              // click 方法，让fireButton以为自己被单击,因为 返回了 click的结果
               fireButton.click();
               return false;
             }
@@ -2848,11 +2848,244 @@ function showAnswer(eventObj) {
 ```
 ==>
 ```js
-fcuntion shipwAwnswer(eventObj) {
-  var image = eventObj.target;   // 被单击的图像元素
+function showAnswer(eventObj) {
+  var image = eventObj.target;   // 被单击的图像元素。onclick 传入 事件对象参数
 
   var name = image.id;  // 直接用 image.id。不用 getAttribute;好像很少用。
   name = name + ".jpg";
-  image.src = name;     // 
+  image.src = name;     // 修改
 }
 ```
+
+[游戏文件](9-Async-Programming/asyncGame.html)
+
+### 问答
+- 也会给`加载事件`处理程序传递一个事件对象吗？  
+是的，这个对象包含目标（window 对象）、事件发生的时间，事件类型（load)等信息。在加载事件处理程序中，通常很少使用事件对象，因为对这种事件来说，它没有提供什么有用的信息。事件对象在有些情况下很有用，在其他情况下又毫无用处。这完全取决于事件类型。  
+有关事件的具体信息，请参阅 JS 的参考手册。  
+
+
+## 事件队列的工作原理
+浏览器把事件都放入队列，再遍历这个队列，并在必要时调用相应的处理程序。  
+按顺序一个一个去处理
+明白这一点对 JS 至关重要：只有一个队列（queue）和一个控制线程（thread）。  
+逐个处理事件。  
+
+有很多不同类型的事件：  
+- 网络事件
+- 定时器事件
+- DOM 事件
+  - 鼠标单击事件包含有关单击位置的信息，按键事件包含有关按下的是哪个键
+
+### 事件和队列
+浏览器维护着一个事件队列。浏览器不断地从这个队列中取出事件，并调用相应的事件处理程序来处理它们 —— 如果有的话。
+
+事件队列：
+- 网页加载完毕
+- 用户单击
+- 一个定时器到期
+- 用户提交表单
+- 用户单击
+- 用户再次单击
+- 另一个定时器到期
+- 用户提交表单
+- 通过网络收到数据
+- ...
+
+应尽可能让处理程序简短而高效，【保证响应速度】。    
+
+#### 在地图上移动鼠标时显示其坐标
+mousemove 事件
+当鼠标`在特定元素上移动`时， mousemove 事件通知相应的处理程序;要指定处理程序，可使用元素的属性 onmouseomove。这样会给这种事件处理程序传递一个 event 对象，其中包含如下属性:  
+- clientX 和 clientY ：鼠标对于`浏览器窗口`左边缘和上边缘的距离，单位为像素。
+- screenX 和 screenY ：鼠标相对`设备屏幕`左边缘和上边缘的距离，单位为像素。
+- pageX 和 pageY ：鼠标相对于`网页`左边缘和上边缘的距离，单位为像素。
+
+```html
+<!doctype html>
+<html>
+  <head lang="en">
+    <meta charset="utf-8">
+    <title>Pirates Booty</title>
+  </head>
+  <script>
+    window.onload = init;
+    function init() {
+      var map = document.getElementById("map");
+      map.onmousemove = showCoords;
+    }
+
+    function showCoords(eventObj) {
+      var map = document.getElementById("coordrs");
+      var x = eventObj.clientX;
+      var y = eventObj.clientY;
+      map.innerHTML = "Map coordinates: " + x + "," + y;
+    }
+  </script>
+</head>
+<body>
+  <img id="map" src="map.jpg">
+  <p id="coords">Move mouse to find coordinates ... </p>
+</body>
+</html>
+```
+
+### 其他事件
+- 通过网络收到数据相关的事件
+- 浏览器地理定位事件
+- 基于时间的事件
+- ...
+
+之前的三种事件：加载事件，单击事件，鼠标移动事件上，  
+为将它们关联到处理程序，总是将处理程序赋给某个属性，如 onload/ onmousemove/onclick。  
+但这种做法并非适用于所有事件。  
+
+
+#### 定时器 setTimeout(callback,t)
+
+例如，基于时间的事件，不是将处理程序赋给属性，而是调用函数setTimeout 并 向它传递处理程序（引用）。    
+
+
+```js
+// 事件处理程序：在时间事件发生时被调用
+function timerHandler() {
+  alert("Hey what are you doing just sitting there staring at a blank screen?");
+}
+
+// 调用setTimeout.它接收两个参数：事件处理程序和时间间隔（单位：毫秒）
+setTimeout(timerHandler, 5000); 
+```
+timerHandler 是指向函数的引用，是函数名。  
+引用就说原理。观感就是把函数当作另一个函数的参数传进去。
+
+【本质上不是都一样吗？也是“回调函数”。setTimeout 相当于 init，在其中调用处理程序。只是这时 init 多了一个时间参数，而且这类 init 是内置函数，不用自己创建。其实也可以说，不需要自己创建 init ，因为时间事件有一个专门的内置的函数是 setTimeout 。】  
+
+setTimeout 实际是一个方法，window.setTimeout。由于 window 是全局对象，可省略对象名。
+【全局对象为什么可以省略对象名？Q】
+
+#### 定时器 setInterval 和 clearInterval
+setInterval(callback, 1000)
+```js
+var tick = true;
+
+function ticker() {
+  if (tick) {
+    console.log("Tick");
+    tick = false;
+  } else {
+    console.log("Tock");
+    tick = true;
+  }
+}
+
+setInterval(ticker, 1000);
+```
+
+第二个参数是时间间隔  
+会不断执行  
+在定时器到期时触发事件，并重启定时器。  
+
+返回一个 timer 对象  
+【Q: 什么是　timer？】
+
+结束执行,  
+将 setInterval `返回的结果`存储在一个变量中，
+```js
+var t = setInterval(ticker, 1000);
+clearInterval(t);
+```
+
+### 问答
+- onload 也可以省略 window对象名，但是其他元素也可能有属性 onload。所以一般不省略。  
+- 调用setTimtout时，实际上是创建了一个定时器，并指定了与之相关联的处理程序。  
+【暂时粗略认为，定时器是由 setTimeout 和 它调用的处理程序组成】
+
+
+#### 定时器 setTimeout(callback,t,thirdPara)
+
+可以传入第三个参数;  
+触发时间事件时，这个参数将被传递给处理程序。  
+【也就是第三个参数作为第一个函数参数的子参数 】  
+
+让猜图游戏将图片重新设置为模糊：
+```js
+window.onload = function() {
+  var images = document.getElementsByTagName("img");
+  for (var i = 0 ; i < images.length; i++) {
+    images[i].onclick = showAnswer;
+  }
+}
+
+function showAnswer(eventObj) {
+  var image = eventObj.target;
+  var name = image.id;
+  name = name + ".jpg";
+  image.src = name;
+
+  setTimeout(reblur, 2000, image);  //新增，且是嵌套调用，reblur 是嵌套中的嵌套
+}
+
+function reblur(image) {   
+  var name = image.id;         //新增。因为是被嵌套调用，所以 reblur可以读到 eventObj 的 image.id
+  name = name + "blur.jpg";
+  image.src = name;
+}
+```
+
+
+### 再谈异步
+测试定时器，猜图游戏  
+
+用户单击图像时，浏览器将通过定时器事件在幕后跟踪何时需要调用处理程序 reblur，
+让图像重新变模糊。这给人以`异步的感觉`：何时单击图像由用户决定，但在幕后，将根据单击事件和定时器事件异步地`调用`代码。  这里并没有任何高深的`算法`控制该在何时调用哪些代码，有的只是`一系列设置、创建和响应事件的代码`。  
+
+
+### 问答
+- setTimout 可以指定的处理程序`传递任意数量的参数`。  
+- setTimeout 不向处理程序传递事件对象，因为时间事件并非由特定的元素触发。  
+- showAnswer 是一个处理程序，并且在其代码中创建了另一个处理程序 reblur。  
+  在处理程序中，创建其他事件处理程序再正常不过了。这是一种编程风格——`异步`编程。不同于按从头到尾的顺序执行的算法，而是创建一些`在事件发生时`执行的事件处理程序。
+
+- 除了 DOM 事件和定时器事件，还有`与 API 相关的事件`，如 Geolocation、LocalStorage、Web Worker 等 JavaScript API 触发的事件。  
+  还有`与 I/O 相关的事件`，如使用 XmlHttpRequest 向 Web 服务请求数据时引发的事件 以及使用 Web 套接字引发的事件。  
+  可参阅《Head First HTML5 Programming》.
+
+### 表达式定义函数
+定义函数时，不指定名称，这样的函数定义可以放在任何需要表达式的地方。  
+
+```js
+var addOne = function(x) {  // 声明变量，将没有名称的函数赋给它
+  return x + 1;
+};
+
+var six = addOne(5);  // 调用是通过变量名
+```
+```js
+window.onload = function () {
+  alert("The page is loaded.");
+}
+```
+
+### 要点
+- 大多数 JS 代码都是用来响应事件的
+- 编写用于处理事件的代码不同于从头到尾执行的代码。事件处理程序的`运行时间`和`运行顺序`都是`不确定`的，它们是`异步`的。  
+
+### 一些事件
+- click：在网页中单击（或轻按）时将触发这个事件
+- load
+- unload: 用户关闭浏览器窗口或切换到其他网页时，将触发这个事件
+- resize: 每当用户调整浏览器窗口的大小时，都将触发这个事件
+- play: 用户单击网页中 video 元素的播放按钮时，将触发这个事件
+- pause: 用户单击 video 元素的暂停按钮时
+- dragstart: 用户拖曳网页中的元素时
+- drop:用户旆拖曳的元素时
+- mousemove: 在元素上移动鼠标时
+- mouseover: 鼠标指向元素时
+- mouseout: 鼠标从元素上移开时
+- keypress: 用户按下任何键
+- touchtart: 在触摸设备上，用户触摸并按住元素时
+- touchend: 用户停止触摸时
+
+#### cookies
+这章没有讲到 cookies。但在填字里有：
+很多操作都会触发事件，但创建 cookies 时不会。
