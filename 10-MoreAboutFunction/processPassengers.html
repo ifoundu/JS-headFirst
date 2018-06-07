@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+
+<head lang="en">
+  <meta charset="utf-8">
+  <title>check passengers</title>
+  <script>
+
+
+    var passengers = [{ name: "Jane Doloop", paid: true },
+    { name: "Dr. Evel", paid: true },
+    { name: "Sue Property", paid: false },
+    { name: "John Funcall", paid: true }
+
+    ];
+    // 表示乘客的数据结构：数组。 属性 name 是简单的文本字符串。 属性 paid 是布尔值。共有四个元素代表四乘客。每个乘客都由一个包含属性 name 和 paid 的对象表示。
+
+
+
+    function processPassengers(passengers, testFunction) { // 两个形参，乘客数组 和 判断条件函数
+      for (var i = 0; i < passengers.length; i++) {
+        if (testFunction(passengers[i])) {  // 乘客在名单上或未买票 为 true
+          return false;                     // 返回 false，乘客未能通过测试
+        }
+      }
+      return true;
+    }
+
+    function checkNoFlyList(passenger) {  // 参数是一位乘客（一个对象），不是对象数组
+      return (passenger.name === "Dr. Evel");
+    }
+
+    function checkNotPaid(passenger) {
+      return (!passenger.paid);           // 没买票则返回true
+    }
+
+    // 整合
+    var allCanFly = processPassengers(passengers, checkNoFlyList);
+    // 向函数传递函数，只需将函数名用作实参即可
+
+    if (!allCanFly) {
+      console.log("The plane can't take off: we have a passenger on the no-fly-list.");
+    }
+
+    var allPaid = processPassengers(passengers, checkNotPaid);
+    if (!allPaid) {
+      console.log("The plane can't take off：not everyone has paid.");
+    }
+
+
+    // 控制台显示成功
+
+    // 将乘客姓名以及是否已买票的信息打印到控制台
+    // 自己改的
+    function printPassenger(passenger) {
+      var message = passenger.name;
+      if (passenger.paid) {
+        console.log(message + " has paid.");
+      } else {
+        console.log(message + " has not paid.");
+      }
+    }
+    
+    processPassengers(passengers, printPassenger);
+
+  </script>
+</head>
+
+</html>

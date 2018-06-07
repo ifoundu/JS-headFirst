@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+
+<head lang="en">
+    <meta charset="utf-8">
+    <title>check passengers</title>
+    <script>
+
+var passengers = [ {name: "Jane Doloop", paid: true, ticket: "coach" },
+                   {name: "Dr. Evel", paid: true, ticket: "firstclass" },
+                   {name: "Sue Property", paid: false, ticket: "firstclass" },
+                   {name: "John Funcall", ticket: "coach" } ];
+
+
+
+        function createDrinkOrder(passenger) {
+            var orderFunction;
+
+            if (passenger.ticket === "firstclass") {   // 条件代码只会执行一次
+                orderFunction = function () {              // 如果乘客是头等舱，将‘创建’这个函数
+                    alert("Would you like a cocktail or wine?");
+                };
+            } else {
+                orderFunction = function () {              // 如果乘客是经济舱，将‘创建’这个函数
+                    alert("Your choice is cola or water.");
+                };
+            }
+
+            return orderFunction;     // 返回创建的函数
+        }
+
+
+        // 改写函数 serviceCustomer
+        function serveCustomer(passenger) {
+            var getDrinkOrderFunction = createDrinkOrder(passenger); // 返回一个函数（如上）
+            getDrinkOrderFunction();   // 调用上一行返回的函数
+
+            // 让乘客点餐
+            getDrinkOrderFunction();   // 
+            getDrinkOrderFunction();
+            // 播放电影
+            getDrinkOrderFunction();
+            // 清理垃圾
+        }
+
+
+        // 使用迭代， 也是开始执行全部函数的调度  (像前面检查乘客是否在禁飞名单和是否买票了的函数一样)
+        function servePassengers(passengers) {
+            for (var i = 0; i < passengers.length; i++) {  // 迭代乘客数组
+                serveCustomer(passengers[i]);  // 对每一位乘客调用上面定义的函数
+            }
+        }
+
+        servePassengers(passengers);  // 
+
+
+    </script>
+</head>
+
+</html>
