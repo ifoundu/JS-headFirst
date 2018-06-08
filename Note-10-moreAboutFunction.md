@@ -486,13 +486,70 @@ function compareNumbers(num1, num2) {
 }
 ```
 
-整全
+整合
 ```js
 var numbersArray = [60, 50, 62, 58, 54, 54];
-numbersArray.sort(compareNumbers); // 大于0时把左边项放在数组靠左边
+numbersArray.sort(compareNumbers); // 大于0时把左边项放在数组靠右边
 console.log(numbersArray);   // 还是原来的数组名
+```
+
+再整理一下
+```js
+var numbersArray = [60, 50, 62, 58, 54, 54];
+
+function compareNumbers(num1, num2) {
+  return num1 - num2;  
+}
+
+numbersArray.sort(compareNumbers); 
+console.log(numbersArray);   
 
 // => [50, 54, 54, 58, 60, 62]
 ```
 
+
 注意，sort 方法是`破坏性`的， 因为它就地`修改数组`，而不是返回一个排序后的新数组。  
+
+### 比较数组对象的属性
+
+重点是注意使用属性进行对比
+```js
+function compareName(colaA, colaB) {
+	if (colaA.name > colaB.name) {      // 属性
+		return 1;
+	} else if (colaA.name === colaB.name) {
+		return 0;
+	} else {
+		return -1;
+	}
+}
+```
+
+直接参考现有的代码,  [cola.html](10-MoreAboutFunction/cola.html)
+
+以及，继续了解 sort 的使用原理，以便更好理解其他代码。  
+
+重新看原理那一段代码：
+
+```js
+var numbersArray = [60, 50, 62, 58, 54, 54];
+
+function compareNumbers(num1, num2) {
+  return num1 - num2;  
+}
+
+numbersArray.sort(compareNumbers); 
+console.log(numbersArray);   
+
+// => [50, 54, 54, 58, 60, 62]
+```
+
+compareNumbers 的两个参数，是数组里的元素。 sort 方法负责把数组元素传递给 compareNumbers。 compareNumbers 比较两个元素参数后，将结论通知 sort 进行排序。  
+
+【当 `(num1, num2)` 中 与 `num1 - num2` 顺序一样时，进行升序排列。顺序相反时，进行降序排列。  
+（ `num1 - num2 > 0` 时，升序排列。 `num2 - num1 > 0`时，降序排列）】
+
+书里是说，按升序排列，`num1 - num2 > 0`，如果返回值为1，就将第一项放在第二项后面。按降序排列时，反转逻辑，即表达式写成`num2 - num1 > 0`， 让返回值表示将第二项放在第一项后面。  【看不懂】
+
+
+【sort 里，默认 升序排序】
